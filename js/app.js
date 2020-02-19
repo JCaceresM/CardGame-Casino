@@ -36,6 +36,18 @@ function color(j){// assignment of color
 }
    
 function shufflingCards(){ // shuffling cards
+
+        if (cards.length === 0){ 
+            while(true){
+                if (shuffledCards.length === 0) {
+                    break;
+                }
+                random = Math.floor(Math.random() * shuffledCards.length)
+                cards.push(shuffledCards[random]);
+                shuffledCards.splice(random ,1)
+                
+            }
+        }
    
         while(true){
             if (cards.length === 0) {
@@ -66,6 +78,7 @@ for (let ind = 0; ind < arr.length; ind++) {
     }
 }
 var p = []
+
 p.push(new Player("juan"))
 p.push(new Player("jose"))
 p.push(new Player("joe"))
