@@ -3,6 +3,7 @@ html{
     background-image: linear-gradient(to right, blue , white);
     background-blend-mode: soft-light;
 }
+
 .title {
     list-style-type: none;
     margin: 0;
@@ -22,12 +23,23 @@ html{
     float: right;
     margin: inherit;
 }
+
+.btn_S{
+  margin: 5px;
+  padding: 5px;
+}
+
+.inputs{
+  margin: inherit;
+  padding: 5px;
+}
 .mesa {
     width: auto;
     height: auto;
     margin: 10px;
     padding: 5px;
     border: 1px solid blue;
+    text-align: center;
   }
   /* li {
     float: left;
