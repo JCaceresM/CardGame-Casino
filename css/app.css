@@ -1,0 +1,46 @@
+html{
+    background-color: rgb(214, 214, 254);
+    background-image: linear-gradient(to right, blue , white);
+    background-blend-mode: soft-light;
+}
+.title {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color:rgb(156, 196, 214);
+    text-align: center;
+    text-size-adjust: 10px;
+    border:3px solid #e7e7e7;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: 2.3em;
+  }
+  
+.btn_B{
+    background-color: rgb(75, 139, 83); /* Blue */
+    padding: 5px;
+    float: right;
+    margin: inherit;
+}
+.mesa {
+    width: auto;
+    height: auto;
+    margin: 10px;
+    padding: 5px;
+    border: 1px solid blue;
+  }
+  /* li {
+    float: left;
+  }
+  
+  li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+  }
+  
+  li a:hover {
+    background-color: #111;
+  } */

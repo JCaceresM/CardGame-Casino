@@ -65,9 +65,29 @@ for (let ind = 0; ind < arr.length; ind++) {
          cards.push(new  Card(arr[ind],arrT[index],arrC[color(arrT[index])]))
     }
 }
-var p = []
-p.push(new Player("juan"))
-p.push(new Player("jose"))
-p.push(new Player("joe"))
-deal(p)
-console.log(p)
+function n(){
+    const input = document.createElement("input");
+    const mesa = document.querySelector('.mesa')
+    const btn = document.getElementById('plus')
+    mesa.insertBefore(input, btn)
+}
+let p = [],p1=[];
+document.getElementById("player")
+    .addEventListener('submit', function(){
+        p1.push(document.getElementById("nplayer").value)
+        if (p1.length > 1) {
+            for (let index = 0; index < p1.length; index++) {
+                p.push(new Player(p1[index]))
+                // console.log(p)
+            }
+        }
+        // console.log(p1)
+        console.log(p)
+    })
+
+// var p = []
+// p.push(new Player("juan"))
+// p.push(new Player("jose"))
+// p.push(new Player("joe"))
+// deal(p)
+// console.log(p)
