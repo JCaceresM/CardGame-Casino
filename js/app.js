@@ -1,9 +1,12 @@
+// import Card from './classes';
 //Class
 class Card{
     constructor(value, type,color){
         this.value = value;
         this.type= type;
         this.color = color;
+        this.img = ("./image/"+this.value + this.color + this.type + ".jpg")
+        console.log(this.img)
     }
 }
 
@@ -17,10 +20,11 @@ class Player{
 }
 // Arrys
  var cards=[],
-     arr = ["as",2,3,4,5,6,7,8,9,10,"jota", "reyna","rey"],
+     arr = ["a",2,3,4,5,6,7,8,9,10,"jota", "reyna","rey"],
      arrT = ["heart", "dimmond","picas","trevol"],
      arrC=  ["red", "black"],
      shuffledCards =[],
+     cardsForTable = [],
      ObjectOfPlayes=[];
 
 
@@ -75,38 +79,69 @@ function MYcreateAttr(element,attributes,values){
        
     return element
 }
-
+ 
 function nplayer(numOfP){
     const form = MYcreateAttr(document.createElement("form"),["id"],["divs"]);
-    const mesa = document.querySelector('.mesa');
-    const btn = document.getElementById('plus');
-      mesa.insertBefore(form,btn);
+    var mesa = document.querySelector('.mesa');
+    // var btn = document.getElementById('play');
+    mesa.appendChild(form);
+    mesa = document.getElementById("divs");
     for (let index = 0; index < numOfP; index++) {
-        const newElement = MYcreateAttr(document.createElement("input"),["class","requred","name"],["btn_S","","players"]);
+        const newElement = MYcreateAttr(document.createElement("input"),["class","name","value","type"],["btn_S","playersname",""]);
         // console.log(newElement);
-         mesa.insertBefore(newElement, btn);
+        mesa.insertBefore(newElement, null);
          if (index === (numOfP-1)){
-             mesa.insertBefore(MYcreateAttr(document.
-                createElement("button"),["id","class","requred","type","onclick"],
-                ["play","btn_S","","submit","func()"]),btn);
+             let btn  = document.createElement("button")
+             btn.innerText = "Play"
+            mesa.insertBefore(MYcreateAttr(document.
+                createElement("br"),[],[]),null);
+             mesa.insertBefore(MYcreateAttr(btn,["class","name","onclick"],
+                ["btn_S","Play","goPlay()"]),null);
+             
          }
          
         
     }
-    // const mesa = document.querySelector('.mesa')
-    //  mesa.insertBefore(MYcreateElement('input','type','submit'),document.querySelectorAll("btn_S")[-1]);
     
 }
-function func(){
+
+function deploy(ob){
+    // console.log(ob)
+    var mesa = document.querySelector('.mesa');
+    if (ob[0] instanceof Player) {
+        const p1 =  MYcreateAttr( document.createElement("div"),["class","id"],['mesa','player1']);
+         mesa.appendChild(p1);
+         mesa = document.getElementById('player1');   
+        
+    }
+        const div  = MYcreateAttr(document.createElement("div"),["class","id"],["container","container1"]);
+        mesa.appendChild(div);
+        for (let index = 0; index < ob.length; index++) {
+            // console.log(ob[index].cardsPlayer[index].img)
+            const div1 = MYcreateAttr(document.createElement("button"),["class","id","onclick","type"],["card","card","","button"]);
+            div.appendChild(div1);
+            const img = MYcreateAttr(document.createElement("img"),["src","alt","class"],[ob[index].img,"card", "img"]);
+            div1.appendChild(img);
+    }
+   
+}
+function Display(){
+    deploy(ObjectOfPlayes);
     
-             const namePlayers = document.getElementsByName("players");
-            
+}
+function goPlay(){
+    
+             const namePlayers = document.getElementsByName("playersname");
+             console.log(namePlayers);
             for (let index = 0; index < namePlayers.length; index++) {
                 ObjectOfPlayes.push(new Player(namePlayers[index].value));
-               
             }
             deal(ObjectOfPlayes);
-            console.log(ObjectOfPlayes);
+            // document.getElementById("divs").remove()
+            document.getElementById('divs').remove()
+            deploy(cardsForTable);
+            Display();
+            // console.log(ObjectOfPlayes);
              
 
 }
@@ -119,7 +154,11 @@ for (let ind = 0; ind < arr.length; ind++) {
         
     }
 }
-console.log(cards)
+for (let index = 0; index < 4; index++) {
+    cardsForTable.push(cards.pop())
+    
+}
+// console.log(cards)
 
 // get the number of Player
 let numOfP=0;
@@ -145,3 +184,4 @@ document.getElementById("player")
 // p.push(new Player("joe"))
 // deal(p)
 // console.log(p)
+// imagen :'<img src="asd/card-type-color-valor.png">'
