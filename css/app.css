@@ -56,11 +56,12 @@ html{
   li a:hover {
     background-color: #111;
   } */
+
   /* CSS de las cartas de york */
-body{
+/* body{
     margin: 0;
     padding: 0;
-}
+} */
 
 .container {
     display: flex;
@@ -94,10 +95,10 @@ body{
 /**
 * number position
 */
-h1{
+/* h1{
     padding: 10px 0px 0px 0px;
     margin: 0;
-}
+} */
 /* mesa */
 /* .player1{
   display: -webkit-inline-box;
@@ -105,3 +106,4 @@ h1{
   width: 50rem;
   background-color: khaki;
 } */
+

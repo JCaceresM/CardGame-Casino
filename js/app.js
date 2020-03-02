@@ -18,18 +18,23 @@ class Player{
         this.score = 0
     }
 }
+
 // Arrys
  var cards=[],
-     arr = ["a",2,3,4,5,6,7,8,9,10,"jota", "reyna","rey"],
+     arr = ["as",2,3,4,5,6,7,8,9,10,"jota", "reyna","rey"],
      arrT = ["heart", "dimmond","picas","trevol"],
      arrC=  ["red", "black"],
      shuffledCards =[],
      cardsForTable = [],
      ObjectOfPlayes=[];
 
-
 //normal variables
 var random ;
+
+// functions
+
+
+
 
 // functions
 
@@ -41,21 +46,54 @@ function color(j){// assignment of color
 }
    
 // function shufflingCards(){ // shuffling cards
-   
+
 //         while(true){
 //             if (cards.length === 0) {
-//                 break;
-//             }
-//             random = Math.floor(Math.random() * cards.length)
-//             shuffledCards.push(cards[random]);
-//             cards.splice(random ,1)
+    //                 break;
+    //             }
+    //             random = Math.floor(Math.random() * cards.length)
+    //             shuffledCards.push(cards[random]);
+    //             cards.splice(random ,1)
             
-//         }
-//         console.log(shuffledCards)
-   
-// }
-
-function deal(numOfPlayer){//dealing cards
+    //         }
+    //         console.log(shuffledCards)
+    
+    // }
+    function color(j){// assignment of color
+        if( j==="heart" || j === "dimmond" ) {
+            return 1
+        }
+        return 0
+    }
+       
+    function shufflingCards(){ // shuffling cards
+    
+            if (cards.length === 0){ 
+                while(true){
+                    if (shuffledCards.length === 0) {
+                        break;
+                    }
+                    random = Math.floor(Math.random() * shuffledCards.length)
+                    cards.push(shuffledCards[random]);
+                    shuffledCards.splice(random ,1)
+                    
+                }
+            }
+       
+            while(true){
+                if (cards.length === 0) {
+                    break;
+                }
+                random = Math.floor(Math.random() * cards.length)
+                shuffledCards.push(cards[random]);
+                cards.splice(random ,1)
+                
+            }
+            console.log(shuffledCards)
+       
+    }
+    
+    function deal(numOfPlayer){//dealing cards
     for (let ind = 0; ind < numOfPlayer.length; ind++) {
         for (let index = 0; index < 4; index++) {
             numOfPlayer[ind].cardsPlayer.push(cards.pop())
@@ -185,3 +223,4 @@ document.getElementById("player")
 // deal(p)
 // console.log(p)
 // imagen :'<img src="asd/card-type-color-valor.png">'
+
