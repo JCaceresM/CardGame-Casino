@@ -1,12 +1,12 @@
-// import Card from './classes';
+//import Card from './classes.js';
 //Class
-class Card{
+ class Card{
     constructor(value, type,color){
         this.value = value;
         this.type= type;
         this.color = color;
-        this.img = ("./image/"+this.value + this.color + this.type + ".jpg")
-        console.log(this.img)
+        this.img = ("./image/"+this.value + this.color + this.type + ".PNG")
+        //console.log(this.img)
     }
 }
 
@@ -21,8 +21,8 @@ class Player{
 
 // Arrys
  var cards=[],
-     arr = ["as",2,3,4,5,6,7,8,9,10,"jota", "reyna","rey"],
-     arrT = ["heart", "dimmond","picas","trevol"],
+     arr = ["as",2,3,4,5,6,7,8,9,10,"jota", "reina","rey"],
+     arrT = ["heart", "diamond","picas","trebol"],
      arrC=  ["red", "black"],
      shuffledCards =[],
      cardsForTable = [],
@@ -33,87 +33,65 @@ var random ;
 
 // functions
 
-
-
-
-// functions
-
-function color(j){// assignment of color
-    if( j==="heart" || j === "dimmond" ) {
-        return 1
-    }
-    return 0
-}
-   
-// function shufflingCards(){ // shuffling cards
-
-//         while(true){
-//             if (cards.length === 0) {
-    //                 break;
-    //             }
-    //             random = Math.floor(Math.random() * cards.length)
-    //             shuffledCards.push(cards[random]);
-    //             cards.splice(random ,1)
-            
-    //         }
-    //         console.log(shuffledCards)
-    
-    // }
-    function color(j){// assignment of color
-        if( j==="heart" || j === "dimmond" ) {
-            return 1
-        }
+function color(cardType){// assignment of color
+    if( cardType==="heart" || cardType === "diamond" ) {
         return 0
     }
+    return 1
+}
+   
        
-    function shufflingCards(){ // shuffling cards
-    
-            if (cards.length === 0){ 
-                while(true){
-                    if (shuffledCards.length === 0) {
-                        break;
-                    }
-                    random = Math.floor(Math.random() * shuffledCards.length)
-                    cards.push(shuffledCards[random]);
-                    shuffledCards.splice(random ,1)
-                    
-                }
+function shufflingCards(){ // shuffling cards
+
+    if (cards.length === 0){ 
+        while(true){
+            if (shuffledCards.length === 0) {
+                break;
             }
-       
-            while(true){
-                if (cards.length === 0) {
-                    break;
-                }
-                random = Math.floor(Math.random() * cards.length)
-                shuffledCards.push(cards[random]);
-                cards.splice(random ,1)
-                
-            }
-            console.log(shuffledCards)
-       
+            random = Math.floor(Math.random() * shuffledCards.length)
+            cards.push(shuffledCards[random]);
+            shuffledCards.splice(random ,1)
+            
+        }
     }
+
+    while(true){
+        if (cards.length === 0) {
+            break;
+        }
+        random = Math.floor(Math.random() * cards.length)
+        shuffledCards.push(cards[random]);
+        cards.splice(random ,1)
+        
+    }
+    for (let index = 0; index < 4; index++) {
+        cardsForTable.push(shuffledCards.pop()) 
+    }
+    console.log(shuffledCards)
     
-    function deal(numOfPlayer){//dealing cards
+}
+
+function deal(numOfPlayer){//dealing cards
     for (let ind = 0; ind < numOfPlayer.length; ind++) {
         for (let index = 0; index < 4; index++) {
-            numOfPlayer[ind].cardsPlayer.push(cards.pop())
+            numOfPlayer[ind].cardsPlayer.push(shuffledCards.pop())
             
         }
     }
 }
 
 function MYcreateAttr(element,attributes,values){
-        // const input =    // Get the first <h1> element in the document
-        for (let index = 0; index < attributes.length; index++) {
-            var att = document.createAttribute(attributes[index]);       // Create a "class" attribute
-            if(values[index] != "")
-            {
-                att.value = values[index];                           // Set the value of the class attribute
+    // const input =    // Get the first <h1> element in the document
+    for (let index = 0; index < attributes.length; index++) {
+        var att = document.createAttribute(attributes[index]);       // Create a "class" attribute
+        if(values[index] != "")
+        {
+            att.value = values[index];                           // Set the value of the class attribute
 
-            }
-            element.setAttributeNode(att); 
-            
         }
+        element.setAttributeNode(att); 
+        
+    }
        
     return element
 }
@@ -146,7 +124,7 @@ function nplayer(numOfP){
 function deploy(ob){
     // console.log(ob)
     var mesa = document.querySelector('.mesa');
-    if (ob[0] instanceof Player) {
+    if (ob instanceof Player) {
         const p1 =  MYcreateAttr( document.createElement("div"),["class","id"],['mesa','player1']);
          mesa.appendChild(p1);
          mesa = document.getElementById('player1');   
@@ -164,23 +142,26 @@ function deploy(ob){
    
 }
 function Display(){
-    deploy(ObjectOfPlayes);
+    deploy(ObjectOfPlayes[0].cardsPlayer);
     
 }
 function goPlay(){
     
-             const namePlayers = document.getElementsByName("playersname");
-             console.log(namePlayers);
-            for (let index = 0; index < namePlayers.length; index++) {
-                ObjectOfPlayes.push(new Player(namePlayers[index].value));
-            }
-            deal(ObjectOfPlayes);
-            // document.getElementById("divs").remove()
-            document.getElementById('divs').remove()
-            deploy(cardsForTable);
-            Display();
-            // console.log(ObjectOfPlayes);
-             
+    const namePlayers = document.getElementsByName("playersname");
+    //console.log(namePlayers);
+    for (let index = 0; index < namePlayers.length; index++) {
+        ObjectOfPlayes.push(new Player(namePlayers[index].value));
+    }
+    deal(ObjectOfPlayes);
+    console.log(ObjectOfPlayes);
+    
+    
+    // document.getElementById("divs").remove()
+    document.getElementById('divs').remove()
+    deploy(cardsForTable);
+    Display();
+    // console.log(ObjectOfPlayes);
+           
 
 }
 
@@ -192,10 +173,9 @@ for (let ind = 0; ind < arr.length; ind++) {
         
     }
 }
-for (let index = 0; index < 4; index++) {
-    cardsForTable.push(cards.pop())
-    
-}
+shufflingCards()
+
+//console.log(cardsForTable)  
 // console.log(cards)
 
 // get the number of Player
