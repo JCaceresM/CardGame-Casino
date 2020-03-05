@@ -6,7 +6,7 @@ class Card{
         this.type= type;
         this.color = color;
         this.img = ("./image/"+this.value + this.color + this.type + ".jpg")
-        console.log(this.img)
+        // console.log(this.img)
     }
 }
 
@@ -15,13 +15,14 @@ class Player{
         this.name = name;
         this.cardsPlayer = [];
         this.lotOfcard = [];
-        this.score = 0
+        this.score = 0;
+        this.turn = false;
     }
 }
 
 // Arrys
  var cards=[],
-     arr = ["as",2,3,4,5,6,7,8,9,10,"jota", "reyna","rey"],
+     arr = ["as",2,3,4,5,6,7,8,9,10,"jota", "reina","rey"],
      arrT = ["heart", "dimmond","picas","trevol"],
      arrC=  ["red", "black"],
      shuffledCards =[],
@@ -35,38 +36,14 @@ var random ;
 
 
 
-
-// functions
-
 function color(j){// assignment of color
     if( j==="heart" || j === "dimmond" ) {
         return 1
     }
     return 0
 }
-   
-// function shufflingCards(){ // shuffling cards
-
-//         while(true){
-//             if (cards.length === 0) {
-    //                 break;
-    //             }
-    //             random = Math.floor(Math.random() * cards.length)
-    //             shuffledCards.push(cards[random]);
-    //             cards.splice(random ,1)
-            
-    //         }
-    //         console.log(shuffledCards)
     
-    // }
-    function color(j){// assignment of color
-        if( j==="heart" || j === "dimmond" ) {
-            return 1
-        }
-        return 0
-    }
-       
-    function shufflingCards(){ // shuffling cards
+function shufflingCards(){ // shuffling cards
     
             if (cards.length === 0){ 
                 while(true){
@@ -89,14 +66,18 @@ function color(j){// assignment of color
                 cards.splice(random ,1)
                 
             }
+            for (let index = 0; index < 4; index++) {
+                cardsForTable.push(shuffledCards.pop())
+                
+            }
             console.log(shuffledCards)
        
     }
     
-    function deal(numOfPlayer){//dealing cards
+function deal(numOfPlayer){//dealing cards
     for (let ind = 0; ind < numOfPlayer.length; ind++) {
         for (let index = 0; index < 4; index++) {
-            numOfPlayer[ind].cardsPlayer.push(cards.pop())
+            numOfPlayer[ind].cardsPlayer.push(shuffledCards.pop())
             
         }
     }
@@ -143,18 +124,27 @@ function nplayer(numOfP){
     
 }
 
-function deploy(ob){
-    // console.log(ob)
+function deploy(ob,element){
+    console.log(ob)
     var mesa = document.querySelector('.mesa');
-    if (ob[0] instanceof Player) {
-        const p1 =  MYcreateAttr( document.createElement("div"),["class","id"],['mesa','player1']);
-         mesa.appendChild(p1);
+    var div ;
+    var e = document.getElementById('pla');
+    console.log(e)
+    if (e != null){
+        e.remove()
+    }
+    if (element === "player1") {
+         
+         div =  MYcreateAttr( document.createElement("div"),["class","id"],['mesa','pla']);
+         mesa.appendChild(div);
          mesa = document.getElementById('player1');   
         
-    }
-        const div  = MYcreateAttr(document.createElement("div"),["class","id"],["container","container1"]);
+    }else{
+        div  = MYcreateAttr(document.createElement("div"),["class","id"],["container","container1"]);
         mesa.appendChild(div);
-        for (let index = 0; index < ob.length; index++) {
+    }
+    console.log(div) 
+    for (let index = 0; index < ob.length; index++) {
             // console.log(ob[index].cardsPlayer[index].img)
             const div1 = MYcreateAttr(document.createElement("button"),["class","id","onclick","type"],["card","card","","button"]);
             div.appendChild(div1);
@@ -164,20 +154,51 @@ function deploy(ob){
    
 }
 function Display(){
-    deploy(ObjectOfPlayes);
+    // deploy(ObjectOfPlayes)
+    for (let index = 0; index < ObjectOfPlayes.length; index++) {
+        if (ObjectOfPlayes[index].turn=== false) {
+            ObjectOfPlayes[index].turn=== true;
+            deploy(ObjectOfPlayes[index].cardsPlayer,"player1");
+            break
+        }else{
+            if (index === (ObjectOfPlayes.length-1)){
+                for (let index = 0; index < ObjectOfPlayes.length; index++){
+                    ObjectOfPlayes[index].turn = false;
+                }
+                Display();
+                break
+            }
+        }
+        
+    }
+    // deploy(ObjectOfPlayes[index].cardsPlayer)
+    // for (let index = 0; index < OPlayes.length; index++) {
+    //     if (OPlayes[index].turn != false) {
+    //         deploy(ObjectOfPlayes[index]);
+    //         break
+    //     }else{
+    //         if(index === (OPlayes.length - 1)){
+    //             OPlayes[0].turn = true;
+                
+    //         }
+    //     }
+        
+    // }
+   
+    
     
 }
 function goPlay(){
     
              const namePlayers = document.getElementsByName("playersname");
-             console.log(namePlayers);
+            //  console.log(namePlayers);
             for (let index = 0; index < namePlayers.length; index++) {
                 ObjectOfPlayes.push(new Player(namePlayers[index].value));
             }
-            deal(ObjectOfPlayes);
-            // document.getElementById("divs").remove()
             document.getElementById('divs').remove()
-            deploy(cardsForTable);
+            shufflingCards();
+            deal(ObjectOfPlayes);
+            deploy(cardsForTable,"container");
             Display();
             // console.log(ObjectOfPlayes);
              
@@ -192,10 +213,7 @@ for (let ind = 0; ind < arr.length; ind++) {
         
     }
 }
-for (let index = 0; index < 4; index++) {
-    cardsForTable.push(cards.pop())
-    
-}
+
 // console.log(cards)
 
 // get the number of Player
