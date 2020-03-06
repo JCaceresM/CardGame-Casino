@@ -171,20 +171,7 @@ function Display(){
         }
         
     }
-    // deploy(ObjectOfPlayes[index].cardsPlayer)
-    // for (let index = 0; index < OPlayes.length; index++) {
-    //     if (OPlayes[index].turn != false) {
-    //         deploy(ObjectOfPlayes[index]);
-    //         break
-    //     }else{
-    //         if(index === (OPlayes.length - 1)){
-    //             OPlayes[0].turn = true;
-                
-    //         }
-    //     }
-        
-    // }
-   
+
     
     
 }
