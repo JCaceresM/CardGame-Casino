@@ -1,11 +1,11 @@
-// import Card from './classes';
+
 //Class
 class Card{
     constructor(value, type,color){
         this.value = value;
         this.type= type;
         this.color = color;
-        this.img = ("./image/"+this.value + this.color + this.type + ".jpg")
+        this.img = ("./image/"+this.value + this.color + this.type + ".PNG")
         // console.log(this.img)
     }
 }
@@ -23,7 +23,7 @@ class Player{
 // Arrys
  var cards=[],
      arr = ["as",2,3,4,5,6,7,8,9,10,"jota", "reina","rey"],
-     arrT = ["heart", "dimmond","picas","trevol"],
+     arrT = ["heart", "diamond","picas","trebol"],
      arrC=  ["red", "black"],
      shuffledCards =[],
      cardsForTable = [],
@@ -36,11 +36,11 @@ var random ;
 
 
 
-function color(j){// assignment of color
-    if( j==="heart" || j === "dimmond" ) {
-        return 1
+function color(cardType){// assignment of color
+    if( cardType==="heart" || cardType === "diamond" ) {
+        return 0
     }
-    return 0
+    return 1
 }
     
 function shufflingCards(){ // shuffling cards
@@ -157,7 +157,7 @@ function Display(){
     // deploy(ObjectOfPlayes)
     for (let index = 0; index < ObjectOfPlayes.length; index++) {
         if (ObjectOfPlayes[index].turn=== false) {
-            ObjectOfPlayes[index].turn=== true;
+            ObjectOfPlayes[index].turn= true;
             deploy(ObjectOfPlayes[index].cardsPlayer,"player1");
             break
         }else{
