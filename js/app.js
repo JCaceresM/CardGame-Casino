@@ -124,7 +124,16 @@ function nplayer(numOfP){
     
 }
 
-function deploy(ob,element){
+function deploy(obp,element){
+    var ob;
+    if (obp instanceof Player){
+        ob = obp.cardsPlayer;
+        console.log(obp.name)
+    }else{
+        ob = obp
+    }
+    
+    
     console.log(ob)
     var mesa = document.querySelector('.mesa');
     var div ;
@@ -137,14 +146,23 @@ function deploy(ob,element){
          
          div =  MYcreateAttr( document.createElement("div"),["class","id"],['mesa','pla']);
          mesa.appendChild(div);
+         h2 =  MYcreateAttr(document.createElement("h2"),["class"],["playerText"]);
+         //h1 = document.createElement('h1');
+         h2.innerText = obp.name
+         div.appendChild(h2)
          mesa = document.getElementById('player1');   
         
     }else{
         div  = MYcreateAttr(document.createElement("div"),["class","id"],["container","container1"]);
+        h2 =  MYcreateAttr(document.createElement("h2"),["class"],["playerText"]);
+        h2.innerText ="Mesa";
+        mesa.appendChild(h2);
         mesa.appendChild(div);
     }
     console.log(div) 
+    
     for (let index = 0; index < ob.length; index++) {
+        
             // console.log(ob[index].cardsPlayer[index].img)
             const div1 = MYcreateAttr(document.createElement("button"),["class","id","onclick","type"],["card","card","","button"]);
             div.appendChild(div1);
@@ -158,7 +176,7 @@ function Display(){
     for (let index = 0; index < ObjectOfPlayes.length; index++) {
         if (ObjectOfPlayes[index].turn=== false) {
             ObjectOfPlayes[index].turn= true;
-            deploy(ObjectOfPlayes[index].cardsPlayer,"player1");
+            deploy(ObjectOfPlayes[index],"player1");
             break
         }else{
             if (index === (ObjectOfPlayes.length-1)){

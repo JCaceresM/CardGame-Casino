@@ -92,6 +92,15 @@ html{
     padding: 0px 0px 0px 0px; 
     margin: 0px;  
 }
+
+.playerText{
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  color: green;
+  display: block;
+  text-decoration: red;
+  text-decoration-style:solid ;
+  text-decoration-line: underline;
+}
 /**
 * number position
 */
