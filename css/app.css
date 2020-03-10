@@ -2,8 +2,18 @@ html{
     background-color: rgb(214, 214, 254);
     background-image: linear-gradient(to right, blue , white);
     background-blend-mode: soft-light;
-}
 
+}
+.playOptions{
+    color: #155724;
+    background-color:rgb(156, 196, 214);
+    border-color: #c3e6cb;
+    position: relative;
+    padding: .75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: .25rem;
+}
 .title {
     list-style-type: none;
     margin: 0;
@@ -15,8 +25,9 @@ html{
     border:3px solid #e7e7e7;
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     font-size: 2.3em;
-  }
-  
+    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;  
+
+}
 .btn_B{
     background-color: rgb(75, 139, 83); /* Blue */
     padding: 5px;
@@ -33,7 +44,7 @@ html{
   margin: inherit;
   padding: 5px;
 }
-.mesa {
+.table {
     width: auto;
     height: auto;
     margin: 10px;
