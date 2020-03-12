@@ -31,7 +31,8 @@ class Player{
      ObjectOfPlayes=[];
 
 /**************** normal global variables **************/
-var random ;
+var random, 
+    cardSelected;
 
 /*********************** FUNCTIONS ***********************/ 
 
@@ -84,7 +85,7 @@ function deal(numOfPlayer){  //dealing cards
     }
 }
 
-function MYcreateAttr1(element,attributes,values){
+/*function MYcreateAttr1(element,attributes,values){
         // const input =    // Get the first <h1> element in the document
         for (let index = 0; index < attributes.length; index++) {
             var att = document.createAttribute(attributes[index]);       // Create a "class" attribute
@@ -98,13 +99,12 @@ function MYcreateAttr1(element,attributes,values){
         }
        
     return element
-}
+}*/
 
 
 
 function MYcreateAttr(element, attributes ){
 
-    
     Object.keys(attributes).forEach(key => {
         element.setAttribute(key, attributes[key]);
     });  
@@ -112,11 +112,7 @@ function MYcreateAttr(element, attributes ){
 }
  
 function nplayer(numOfP){
-    const form = MYcreateAttr(document.createElement("form"),
-    { 
-      
-        id :"divs"
-    });
+    const form = MYcreateAttr(document.createElement("form"),{id :"divs"});
     var table = document.querySelector('.table');
     // var btn = document.getElementById('play');
     table.appendChild(form);
@@ -126,20 +122,22 @@ function nplayer(numOfP){
         {
             class:"btn_S",
             name:"playersname",
+            placeholder:"Player Name",
             value:""
 
         });
         // console.log(newElement);
-        table.insertBefore(newElement, null);
-         if (index === (numOfP-1)){
-             let btn  = document.createElement("button")
-             btn.innerText = "Play"
-            table.insertBefore(MYcreateAttr(document.
-                createElement("br"),{}),null);
-             table.insertBefore(MYcreateAttr1(btn,["class","name","onclick"],
-                ["btn_S","Play","goPlay()"]),null);
-             
-         }
+         table.insertBefore(newElement, null);
+        if (index === (numOfP-1)){
+            let btn  = document.createElement("button")
+            btn.innerText = "Play"
+            table.insertBefore(MYcreateAttr(document.createElement("br"),{}),null);
+            table.insertBefore(MYcreateAttr(btn,{
+                class:"btn_S",
+                name:"Play",
+                onclick:'goPlay()'
+            }),null);    
+        }
          
         
     }
@@ -170,17 +168,14 @@ function deploy(playerObject,element){ // deploy card to the players and the tab
     }
     if (element === "player1") {
          
-         div =  MYcreateAttr( document.createElement("div"),
-         {
-            class:"table",id:"pla"
-         });
+         div =  MYcreateAttr( document.createElement("div"),{class:"table",id:"pla"});
          table.appendChild(div);
          h2 =  MYcreateAttr(document.createElement("h2"),
          {
             class:"playerText"
-        });
+         });
          //h1 = document.createElement('h1');
-         h2.innerText = playerObject.name
+         h2.innerText = 'Player: ' + playerObject.name;
          div.appendChild(h2)
          table = document.getElementById('player1');   
         
@@ -245,25 +240,28 @@ function Display(){
     }
 }
 function clickOnCard(e){
-    console.log(JSON.parse(e.toElement.parentElement.value))
-    leaveCard(JSON.parse(e.toElement.parentElement.value))
+    //console.log(JSON.parse(e.toElement.parentElement.value))
+    cardSelected= e.toElement.parentElement.value
+    //leaveCard(JSON.parse(e.toElement.parentElement.value))
      // menu of options for play
      var table = document.querySelector('.table');
      var leave =  MYcreateAttr(document.createElement('button'),
      {
          class:'btn_S',
          id:'leaveBtn',
-         onclick:leaveCard(ObjectOfPlayes)
+         onclick:'leaveCard(ObjectOfPlayes)'
      });
      var combine =  MYcreateAttr(document.createElement('button'),
      {
          class:'btn_S',
-         id:'combineBtn'
+         id:'combineBtn',
+         onclick:''
      });
      var take =  MYcreateAttr(document.createElement('button'),
      {
          class:'btn_S',
-         id:'leaveBtn'
+         id:'leaveBtn',
+         onclick:''
      });
      
      leave.innerText = "Leave"
@@ -286,13 +284,27 @@ function clickOnCard(e){
 
 
 function leaveCard(playersObject){ // for leave cards on the table
-   // console.log(playersObject)
-    cardButton = document.querySelectorAll('.card')
-  //  console.log(cardButton.length);
+    let count = 0, playerSelected;
+  
+    ObjectOfPlayes.forEach(element =>{
+        if(element.turn)   count+=1;
+    })
+    cardsForTable.push(JSON.parse(cardSelected))
+    ObjectOfPlayes[count-1].cardsPlayer.pop(cardSelected);
     
-    for (var i=0; i < cardButton.length; i++){
-        console.log(cardButton[i])    
-    }
+
+    //console.log(ObjectOfPlayes.find(element => element === playerSelected))
+    console.log(cardsForTable);
+    console.log(ObjectOfPlayes);
+    // ObjectOfPlayes.find(element =>{
+    //     //console.log(element)
+    //     if (element.turn){
+    //         console.log(element)
+    //     }
+    // })
+    deploy(cardsForTable,"container");
+    Display()
+    
     
     
 }
