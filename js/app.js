@@ -31,8 +31,8 @@ class Player{
      ObjectOfPlayes=[];
 
 /**************** normal global variables **************/
-var random, 
-    cardSelected;
+var random,
+cardSelected = [];
 
 /*********************** FUNCTIONS ***********************/ 
 
@@ -241,10 +241,20 @@ function Display(){
 }
 function clickOnCard(e){
     //console.log(JSON.parse(e.toElement.parentElement.value))
-    cardSelected= e.toElement.parentElement.value
+    var Selected=JSON.parse(e.toElement.parentElement.value)
+    Object.keys(Selected).forEach(key => {
+        cardSelected.push(Selected[key]);
+    })
+    console.log(cardSelected)
     //leaveCard(JSON.parse(e.toElement.parentElement.value))
      // menu of options for play
      var table = document.querySelector('.table');
+     console.log(cardsForTable)
+    //  Object(cardsForTable).forEach(c =>{
+        //  if (cardSelected in cardsForTable){
+        //     console.log("ok")
+        //  }
+    //  })
      var leave =  MYcreateAttr(document.createElement('button'),
      {
          class:'btn_S',
@@ -289,13 +299,15 @@ function leaveCard(playersObject){ // for leave cards on the table
     ObjectOfPlayes.forEach(element =>{
         if(element.turn)   count+=1;
     })
-    cardsForTable.push(JSON.parse(cardSelected))
-    ObjectOfPlayes[count-1].cardsPlayer.pop(cardSelected);
+    var newcardfortable = new Card(cardSelected[0],cardSelected[1],cardSelected[2])
+    console.log(newcardfortable)
+    cardsForTable.push(newcardfortable)
+    ObjectOfPlayes[count-1].cardsPlayer.pop(newcardfortable);
     
 
     //console.log(ObjectOfPlayes.find(element => element === playerSelected))
     console.log(cardsForTable);
-    console.log(ObjectOfPlayes);
+    // console.log(ObjectOfPlayes);
     // ObjectOfPlayes.find(element =>{
     //     //console.log(element)
     //     if (element.turn){
