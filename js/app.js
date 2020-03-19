@@ -8,7 +8,59 @@ class Card{
         this.img = ("./image/"+this.value + this.color + this.type + ".PNG")
         // console.log(this.img)
     }
-}
+   
+    
+    
+};
+
+class Deck extends Card{
+    // scardsDeck = [];
+    constructor(){
+        super()
+        this.cardsDeck = [];
+    };
+    cardsValue = ["as",2,3,4,5,6,7,8,9,10,"jota", "reina","rey"];
+    cardsProperity = []
+    picas = {
+            type: "picas",
+            color: "black"
+    };
+    trevol = {
+            type: "trebol",
+            color: "black"
+        };
+    diamond = {
+            type: "diamond",
+            color: "red"
+        };
+    heart = {
+            type: "heart",
+            color: "red"
+        };
+    union(){
+        this.cardsProperity.push(this.picas)
+        this.cardsProperity.push(this.trevol)
+        this.cardsProperity.push(this.diamond)
+        this.cardsProperity.push(this.heart)
+    }
+    
+    createDeck(){
+        this.union()
+    //  console.log(this.cardsProperity)
+    // console.log(this.cardsValue)
+    // console.log(this.cardsProperity)
+    this.cardsProperity.forEach(key =>{
+            
+            for (let index = 0; index < this.cardsValue.length; index++) {
+                this.cardsDeck.push(new Card(this.cardsValue[index],key.type,key.color));
+                
+            }
+        });
+        console.log(this.cardsDeck)
+        return this.cardsDeck
+    }
+    
+};
 
 class Player{
     constructor(name){
@@ -21,15 +73,13 @@ class Player{
 }
 
 /*********************** ARRAYS***********************/
-
- var cards=[],
-     arr = ["as",2,3,4,5,6,7,8,9,10,"jota", "reina","rey"],
-     arrT = ["heart", "diamond","picas","trebol"],
-     arrC=  ["red", "black"],
+var e = new Deck();
+e.createDeck
+ var cards= e.createDeck(),
      shuffledCards =[],
      cardsForTable = [],
      ObjectOfPlayes=[];
-
+     
 /**************** normal global variables **************/
 var random,
 cardSelected = [];
@@ -38,14 +88,14 @@ cardSelected = [];
 
 
 
-function color(cardType){// assignment of color
+function color(cardType){// assignment of color r
     if( cardType==="heart" || cardType === "diamond" ) {
         return 0
     }
     return 1
 }
     
-function shufflingCards(){ // shuffling cards
+function shufflingCards(){ // shuffling cards m
     
             if (cards.length === 0){ 
                 while(true){
@@ -76,7 +126,7 @@ function shufflingCards(){ // shuffling cards
        
     }
     
-function deal(numOfPlayer){  //dealing cards
+function deal(numOfPlayer){  //dealing cards m
     for (let ind = 0; ind < numOfPlayer.length; ind++) {
         for (let index = 0; index < 4; index++) {
             numOfPlayer[ind].cardsPlayer.push(shuffledCards.pop())
@@ -103,15 +153,16 @@ function deal(numOfPlayer){  //dealing cards
 
 
 
-function MYcreateAttr(element, attributes ){
+function MYcreateAttr(element, attributes ){ // m
 
     Object.keys(attributes).forEach(key => {
         element.setAttribute(key, attributes[key]);
+        // console.log(key)
     });  
     return element
 }
  
-function nplayer(numOfP){
+function nplayer(numOfP){ // m
     const form = MYcreateAttr(document.createElement("form"),{id :"divs"});
     var table = document.querySelector('.table');
     // var btn = document.getElementById('play');
@@ -220,7 +271,7 @@ function deploy(playerObject,element){ // deploy card to the players and the tab
     }
    
 }
-function Display(){
+function Display(){ // m
     // deploy(ObjectOfPlayes)
     for (let index = 0; index < ObjectOfPlayes.length; index++) {
         if (ObjectOfPlayes[index].turn=== false) {
@@ -239,7 +290,7 @@ function Display(){
         
     }
 }
-function clickOnCard(e){
+function clickOnCard(e){ // m
     //console.log(JSON.parse(e.toElement.parentElement.value))
     var Selected=JSON.parse(e.toElement.parentElement.value)
     Object.keys(Selected).forEach(key => {
@@ -293,7 +344,7 @@ function clickOnCard(e){
         
 
 
-function leaveCard(playersObject){ // for leave cards on the table
+function leaveCard(playersObject){ // for leave cards on the table m
     let count = 0, playerSelected;
   
     ObjectOfPlayes.forEach(element =>{
@@ -339,20 +390,23 @@ function goPlay(){
            
             deploy(cardsForTable,"container");
             Display();
-            // console.log(ObjectOfPlayes);
+            console.log(cards)
+            
+            console.log(shuffledCards);
             
     
 }
 
 /********************* main *************************/ 
 // creating cards
-for (let ind = 0; ind < arr.length; ind++) {
-    for (let index = 0; index < arrT.length; index++) {
-         cards.push(new  Card(arr[ind],arrT[index],arrC[color(arrT[index])]))
+// for (let ind = 0; ind < arr.length; ind++) {
+//     for (let index = 0; index < arrT.length; index++) {
+//          cards.push(new  Card(arr[ind],arrT[index],arrC[color(arrT[index])]))
         
-    }
-}
-
+//     }
+// }
+// var e = new Deck();
+// e.createDeck
 
 
 // get the number of Player
