@@ -4,13 +4,11 @@ class Card{
         this.value = value;
         this.type= type;
         this.color = color;
-        this.img = ("./image/"+this.value + this.color + this.type + ".PNG")
+        this.img = ("./image/"+this.value + this.color + this.type + ".PNG");
         // console.log(this.img)
     }
     
-    
-    
-};
+}
 
 class Player{
     constructor(name){
@@ -20,18 +18,19 @@ class Player{
         this.score = 0;
         this.turn = false;
     }
-};
+}
 
 class Deck extends Card{
     constructor(){
-        super()
+        super();
         this.cardsDeck = [];
-    };
+    }
+
     cardsValue = ["as",2,3,4,5,6,7,8,9,10,"jota", "reina","rey"];
     cardsProperity = [];
     shuffledCards= [];
     cardsForTable = [];
-    random;
+    random = 0;
     picas = {
             type: "picas",
             color: "black"
@@ -49,14 +48,14 @@ class Deck extends Card{
             color: "red"
         };
     union(){
-        this.cardsProperity.push(this.picas)
-        this.cardsProperity.push(this.trevol)
-        this.cardsProperity.push(this.diamond)
-        this.cardsProperity.push(this.heart)
+        this.cardsProperity.push(this.picas);
+        this.cardsProperity.push(this.trevol);
+        this.cardsProperity.push(this.diamond);
+        this.cardsProperity.push(this.heart);
     }
     
     createDeck(){
-        this.union()
+        this.union();
         //  console.log(this.cardsProperity)
         // console.log(this.cardsValue)
         // console.log(this.cardsProperity)
@@ -66,7 +65,7 @@ class Deck extends Card{
              }
         });
             // this.cardsDeck.forEach(key => {console.log(key)})
-        return this.cardsDeck
+        return this.cardsDeck;
     }
 
     
@@ -76,10 +75,10 @@ class Deck extends Card{
             while(true){
                 if (this.shuffledCards.length === 0) {
                     break;
-                }
-                this.random = Math.floor(Math.random() * this.shuffledCards.length)
+                };
+                this.random = Math.floor(Math.random() * this.shuffledCards.length);
                 cards.push(shuffledCards[random]);
-                this.shuffledCards.splice(this.random ,1)
+                this.shuffledCards.splice(this.random ,1);
                 
             }
         }
@@ -88,13 +87,13 @@ class Deck extends Card{
             if (cards.length === 0) {
                 break;
             }
-            this.random = Math.floor(Math.random() * cards.length)
+            this.random = Math.floor(Math.random() * cards.length);
             this.shuffledCards.push(cards[this.random]);
-            cards.splice(this.random ,1)
+            cards.splice(this.random ,1);
             
         }
         for (let index = 0; index < 4; index++) {
-            this.cardsForTable.push(this.shuffledCards.pop())
+            this.cardsForTable.push(this.shuffledCards.pop());
             
         }
         //console.log(shuffledCards)
@@ -104,16 +103,16 @@ class Deck extends Card{
     deal(numOfPlayer){  //dealing cards
         for (let ind = 0; ind < numOfPlayer.length; ind++) {
             for (let index = 0; index < 4; index++) {
-                numOfPlayer[ind].cardsPlayer.push(this.shuffledCards.pop())
+                numOfPlayer[ind].cardsPlayer.push(this.shuffledCards.pop());
                 
             }
         }
     }
-};
+}
 
 class Table extends Deck{
     constructor(){
-        super()
+        super();
     }
     ObjectOfPlayes=[];
     cardSelected=[];
@@ -124,8 +123,8 @@ class Table extends Deck{
             element.setAttribute(key, attributes[key]);
             // console.log(key)
         });  
-        return element
-    };
+        return element;
+    }
 
     nplayer(numOfP){
         const form = this.MYcreateAttr(document.createElement("form"),{id :"divs"});
@@ -145,20 +144,20 @@ class Table extends Deck{
             // console.log(newElement);
             table.insertBefore(newElement, null);
             if (index === (numOfP-1)){
-                let btn  = document.createElement("button")
-                btn.innerText = "Play"
+                let btn  = document.createElement("button");
+                btn.innerText = "Play";
                 table.insertBefore(this.MYcreateAttr(document.createElement("br"),{}),null);
                 table.insertBefore(this.MYcreateAttr(btn,{
                     class:"btn_S",
                     name:"Play",
-                    onclick:'game.table.goPlay()'
+                    onclick:'game.table.goPlay();'
                 }),null);    
             }
              
             
         }
         
-    };
+    }
 
     deploy(playerObject,element){ // deploy card to the players and the table
         let playerCards;
@@ -168,7 +167,7 @@ class Table extends Deck{
             // var namep = playerObject.name;
             //console.log(obp.name)
         }else{
-            playerCards = playerObject
+            playerCards = playerObject;
         }
 
         var table = document.querySelector('.table');
@@ -176,7 +175,7 @@ class Table extends Deck{
         var e = document.getElementById('pla');
         // console.log(e)
         if (e != null){
-            e.remove()
+            e.remove();
         }
         if (element === "player1") {
              
@@ -189,7 +188,7 @@ class Table extends Deck{
              });
              //h1 = document.createElement('h1');
              h2.innerText = 'Player: ' + playerObject.name;
-             div.appendChild(h2)
+             div.appendChild(h2);
              table = document.getElementById('player1');   
             
         }else{
@@ -216,7 +215,7 @@ class Table extends Deck{
             const div1 = this.MYcreateAttr(document.createElement("button"), {
                 class:'card',
                 id: 'card',
-                onclick: 'game.table.clickOnCard(event)',
+                onclick: 'game.table.clickOnCard(event);',
                 type: 'button',
                 value: JSON.stringify(playerCards[index])
     
@@ -232,7 +231,7 @@ class Table extends Deck{
             div1.appendChild(img);
         }
        
-    };
+    }
 
     Display(){
         //console.log(this.ObjectOfPlayes)
@@ -240,14 +239,14 @@ class Table extends Deck{
             if (this.ObjectOfPlayes[index].turn=== false) {
                 this.ObjectOfPlayes[index].turn= true;
                 this.deploy(this.ObjectOfPlayes[index],"player1");
-                break
+                break;
             }else{
                 if (index === (this.ObjectOfPlayes.length-1)){
                     for (let index = 0; index < this.ObjectOfPlayes.length; index++){
                         this.ObjectOfPlayes[index].turn = false;
                     }
                     this.Display();
-                    break
+                    break;
                 }
             }
             
@@ -256,7 +255,7 @@ class Table extends Deck{
     emptyCardSelectedArray()  { // remove values fron array cardSelected
         var index = 0;
         while(index <= this.cardSelected.length ) {
-            this.cardSelected.pop()
+            this.cardSelected.pop();
             if (this.cardSelected.length==0){
                 break;
             }
@@ -274,12 +273,12 @@ class Table extends Deck{
         this.ObjectOfPlayes.forEach(element =>{
             if(element.turn) { count+=1; }
         })
-        var newcardfortable = new Card(this.cardSelected[0],this.cardSelected[1],this.cardSelected[2])
+        var newcardfortable = new Card(this.cardSelected[0],this.cardSelected[1],this.cardSelected[2]);
         
         this.emptyCardSelectedArray();
         
         //console.log(newcardfortable)
-        this.cardsForTable.push(newcardfortable)
+        this.cardsForTable.push(newcardfortable);
         
         index =  this.ObjectOfPlayes[count-1].cardsPlayer.findIndex(element => element.color === newcardfortable.color && element.value == newcardfortable.value );
         // console.log(index)
@@ -298,9 +297,9 @@ class Table extends Deck{
       
         //console.log(cardsForTable);
      
-        this.removeElements()
+        this.removeElements();
         this.deploy(this.cardsForTable,"container");
-        this.Display()        
+        this.Display();      
     }
 
     removeElements(){
@@ -351,9 +350,9 @@ class Table extends Deck{
              onclick:''
          });
          
-         leave.innerText = "Leave"
-         combine.innerText = "Combine" // buttons option menu
-         take.innerText = "Take"
+         leave.innerText = "Leave";
+         combine.innerText = "Combine"; // buttons option menu
+         take.innerText = "Take";
        
           // for play Options
          divOptions.appendChild(leave);
@@ -371,7 +370,7 @@ class Table extends Deck{
        for (let index = 0; index < namePlayers.length; index++) {
            this.ObjectOfPlayes.push(new Player(namePlayers[index].value));
        }
-       document.getElementById('divs').remove()
+       document.getElementById('divs').remove();
        this.shufflingCards(this.createDeck());
        this.deal(this.ObjectOfPlayes);
        this.deploy(this.cardsForTable,"container");
@@ -380,17 +379,17 @@ class Table extends Deck{
     //    console.log(shuffledCards);
        
 
-    };
+    }
 
     
- };
+ }
 
  class Game {
      constructor(){
          this.cards;
      }
      deck = new Deck();
-     table = new Table()
+     table = new Table();
      initGame(numOfP) {
         //  this.deck.union()
         //  this.cards = this.deck.createDeck();
@@ -402,7 +401,7 @@ class Table extends Deck{
 
  }
 
- var game = new Game()
+ var game = new Game();
  
 let numOfP=0;
 document.getElementById("player")
