@@ -161,6 +161,7 @@ class Table extends Deck{
     };
 
     deploy(playerObject,element){ // deploy card to the players and the table
+        
         let playerCards;
         
         if (playerObject instanceof Player){ 
@@ -169,6 +170,7 @@ class Table extends Deck{
             //console.log(obp.name)
         }else{
             playerCards = playerObject
+            
         }
 
         var table = document.querySelector('.table');
@@ -208,6 +210,15 @@ class Table extends Deck{
             table.appendChild(div);
         };
         //console.log(div) 
+
+       let onclickAtt = function(){ 
+            if (playerObject instanceof Player){ 
+               return   'game.table.clickOnCard(event)';
+            }else{
+               return '';
+            }
+          
+        }
         
         for (let index = 0; index < playerCards.length; index++) {
             
@@ -216,7 +227,7 @@ class Table extends Deck{
             const div1 = this.MYcreateAttr(document.createElement("button"), {
                 class:'card',
                 id: 'card',
-                onclick: 'game.table.clickOnCard(event)',
+                onclick: onclickAtt(),
                 type: 'button',
                 value: JSON.stringify(playerCards[index])
     
@@ -275,32 +286,65 @@ class Table extends Deck{
             if(element.turn) { count+=1; }
         })
         var newcardfortable = new Card(this.cardSelected[0],this.cardSelected[1],this.cardSelected[2])
-        
+
         this.emptyCardSelectedArray();
-        
-        //console.log(newcardfortable)
+          
         this.cardsForTable.push(newcardfortable)
         
         index =  this.ObjectOfPlayes[count-1].cardsPlayer.findIndex(element => element.color === newcardfortable.color && element.value == newcardfortable.value );
-        // console.log(index)
-        
-        /*ObjectOfPlayes[count-1].cardsPlayer.forEach((element)=>{
-            if(element === newcardfortable){
-                break;
-            }
-            console.log(element)
-            count2 += 1
-        })*/
-       
+       console.log(this.ObjectOfPlayes)
         this.ObjectOfPlayes[count-1].cardsPlayer.splice(index,1);
         
-    
-      
-        //console.log(cardsForTable);
      
         this.removeElements()
         this.deploy(this.cardsForTable,"container");
         this.Display()        
+    }
+
+    takeCard(){
+        let  cardForPlayer = [],count= 0,indexTable,indexPlayer, take= false ;
+        
+    
+        this.ObjectOfPlayes.forEach(element =>{
+            if(element.turn) { count+=1; }
+        })
+       // console.log (count)
+        /*console.log(this.cardsForTable);
+       
+        console.log(this.ObjectOfPlayes);
+
+        console.log(this.cardSelected);*/
+
+        this.cardsForTable.forEach((element) => {
+            if(element.value === this.cardSelected[0]) {
+               take = true ;
+                indexTable =  this.cardsForTable.findIndex(element => element.value === this.cardSelected[0] && element.color === this.cardSelected[2] );
+                indexPlayer =  this.ObjectOfPlayes[count-1].cardsPlayer.findIndex(element => element.value === this.cardSelected[0] && element.color === this.cardSelected[2] );
+                
+                
+        
+                if (indexPlayer != -1){
+
+                    this.ObjectOfPlayes[count-1].lotOfcard.push(this.ObjectOfPlayes[count-1].cardsPlayer[indexPlayer]);
+                    this.ObjectOfPlayes[count-1].cardsPlayer.splice(indexPlayer,1);
+                }
+
+                this.ObjectOfPlayes[count-1].lotOfcard.push(element);
+                this.cardsForTable.splice(indexTable,1);
+               
+                console.log(this.ObjectOfPlayes);
+            
+            }
+           
+        });
+        if (take){
+            this.removeElements();
+            this.deploy(this.cardsForTable,"container");
+            this.Display();
+        } else {
+            console.log('Ninguna carta coincide');
+        }
+       ;
     }
 
     removeElements(){
@@ -348,7 +392,7 @@ class Table extends Deck{
          {
              class:'btn_S',
              id:'leaveBtn',
-             onclick:''
+             onclick:'game.table.takeCard()'
          });
          
          leave.innerText = "Leave"
