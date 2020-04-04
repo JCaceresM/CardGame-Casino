@@ -26,7 +26,7 @@ class Deck extends Card{
         this.cardsDeck = [];
     }
 
-    cardsValue = ["as",2,3,4,5,6,7,8,9,10,"jota", "reina","rey"];
+    cardsValue = [1,2,3,4,5,6,7,8,9,10,11,12,13];
     cardsProperity = [];
     shuffledCards= [];
     cardsForTable = [];
@@ -446,27 +446,27 @@ class Table extends Deck{
     }
 
     combination(){
-        function onlyNumber(cardInTable){
-            var cardCombinable = [];
-            cardInTable.forEach(element => {
-                var  objecValue  = typeof element.value;
-                if(objecValue === 'number'){
-                    cardCombinable.push(element);
-                }
-            });
-            return cardCombinable;
-        }
-        var combinable =onlyNumber(this.cardsForTable);
+        // function onlyNumber(cardInTable){
+        //     var cardCombinable = [];
+        //     cardInTable.forEach(element => {
+        //         var  objecValue  = typeof element.value;
+        //         if(objecValue === 'number'){
+        //             cardCombinable.push(element);
+        //         }
+        //     });
+        //     return cardCombinable;
+        // }
+        // var combinable =onlyNumber(this.cardsForTable);
         // console.log(combinable)
 
         var combinated = [], c = 1;
-        combinable.forEach(card1 =>{
+        this.cardsForTable.forEach(card1 =>{
 
-                for (let index = c; index < combinable.length; index++) {
+                for (let index = c; index < this.cardsForTable.length; index++) {
                          var cardComninated = [];
-                        if (card1.img != combinable[index].img ) {
-                            if ((card1.value + combinable[index].value) < 11) {
-                                cardComninated = [card1.value + combinable[index].value,card1.img, combinable[index].img]
+                        if (card1.img != this.cardsForTable[index].img ) {
+                            if ((card1.value + this.cardsForTable[index].value) < 15) {
+                                cardComninated = [card1.value + this.cardsForTable[index].value,card1.img, this.cardsForTable[index].img]
                                 combinated.push(cardComninated)
                             }
                             
@@ -569,6 +569,8 @@ class Table extends Deck{
            console.log(parseInt(cardCombinateValue[0]))
              if (playerInTurn.cardsPlayer[index].value === parseInt(cardCombinateValue[0])) {
                 playerInTurn.turn = true;
+                playerInTurn.lotOfcard.push(playerInTurn.cardsPlayer[index]);
+                playerInTurn.cardsPlayer.splice(index,1);
                 this.deleteCard(cardCombinateValue[1]);
                 this.deleteCard(cardCombinateValue[2]);
                 this.removeElements();
@@ -576,7 +578,20 @@ class Table extends Deck{
                 this.deploy(this.cardsForTable,"container");
                 this.Display();
             } else {
+                if (playerInTurn.cardsPlayer[index].value === 1 && parseInt(cardCombinateValue[0]) === 14 ) {
+                    playerInTurn.turn = true;
+                    playerInTurn.lotOfcard.push(playerInTurn.cardsPlayer[index]);
+                    playerInTurn.cardsPlayer.splice(index,1);
+                    this.deleteCard(cardCombinateValue[1]);
+                    this.deleteCard(cardCombinateValue[2]);
+                    this.removeElements();
+                    this.showCombinated();
+                    this.deploy(this.cardsForTable,"container");
+                    this.Display();
+                }else{
                     console.log('Ninguna carta coincide');
+                }
+                    
                 
              }
             
