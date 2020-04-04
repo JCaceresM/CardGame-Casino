@@ -282,9 +282,9 @@ class Table extends Deck{
     leaveCard(){ // for leave cards on the table
         let count = 0,index, playerSelected;
       
-        this.ObjectOfPlayes.forEach(element =>{
-            if(element.turn) { count+=1; }
-        })
+        // this.ObjectOfPlayes.forEach(element =>{
+        //     if(element.turn) { count+=1; }
+        // });
         var newcardfortable = new Card(this.cardSelected[0],this.cardSelected[1],this.cardSelected[2]);
         
         this.emptyCardSelectedArray();
@@ -292,9 +292,9 @@ class Table extends Deck{
         //console.log(newcardfortable)
         this.cardsForTable.push(newcardfortable);
         
-        index =  this.ObjectOfPlayes[count-1].cardsPlayer.findIndex(element => element.color === newcardfortable.color && element.value == newcardfortable.value );
+        index =  this.ObjectOfPlayes[this.playerInTurn()].cardsPlayer.findIndex(element => element.color === newcardfortable.color && element.value == newcardfortable.value );
        console.log(this.ObjectOfPlayes)
-        this.ObjectOfPlayes[count-1].cardsPlayer.splice(index,1);
+        this.ObjectOfPlayes[this.playerInTurn()].cardsPlayer.splice(index,1);
         
     
       
@@ -310,9 +310,9 @@ class Table extends Deck{
         let  cardForPlayer = [],count= 0,indexTable,indexPlayer, take= false ;
         
     
-        this.ObjectOfPlayes.forEach(element =>{
-            if(element.turn) { count+=1; }
-        })
+        // this.ObjectOfPlayes.forEach(element =>{
+        //     if(element.turn) { count+=1; }
+        // })
        // console.log (count)
         /*console.log(this.cardsForTable);
        
@@ -324,17 +324,17 @@ class Table extends Deck{
             if(element.value === this.cardSelected[0]) {
                take = true ;
                 indexTable =  this.cardsForTable.findIndex(element => element.value === this.cardSelected[0] && element.color === this.cardSelected[2] );
-                indexPlayer =  this.ObjectOfPlayes[count-1].cardsPlayer.findIndex(element => element.value === this.cardSelected[0] && element.color === this.cardSelected[2] );
-                
+                indexPlayer =  this.ObjectOfPlayes[this.playerInTurn()].cardsPlayer.findIndex(element => element.value === this.cardSelected[0] && element.color === this.cardSelected[2] );
+                console.log(indexTable)
                 
         
                 if (indexPlayer != -1){
 
-                    this.ObjectOfPlayes[count-1].lotOfcard.push(this.ObjectOfPlayes[count-1].cardsPlayer[indexPlayer]);
-                    this.ObjectOfPlayes[count-1].cardsPlayer.splice(indexPlayer,1);
+                    this.ObjectOfPlayes[this.playerInTurn()].lotOfcard.push(this.ObjectOfPlayes[this.playerInTurn()].cardsPlayer[indexPlayer]);
+                    this.ObjectOfPlayes[this.playerInTurn()].cardsPlayer.splice(indexPlayer,1);
                 }
 
-                this.ObjectOfPlayes[count-1].lotOfcard.push(element);
+                this.ObjectOfPlayes[this.playerInTurn()].lotOfcard.push(element);
                 this.cardsForTable.splice(indexTable,1);
                
                 console.log(this.ObjectOfPlayes);
@@ -353,16 +353,28 @@ class Table extends Deck{
     }
 
     removeElements(){
-        document.getElementById('container1').remove();
-        document.getElementById('playerText').remove();
-        document.getElementById('tableText').remove();
-        document.getElementById('playOptions').remove();
-        
+        // document.getElementById('combinateOption').remove();
+        var exeption1= document.getElementById('container1'),
+        exeption2 = document.getElementById('playerText'),
+        exeption3 =  document.getElementById('tableText'),
+        exeption4= document.getElementById('playOptions')
+        if (exeption1 != null ) {
+            exeption1.remove();
+        }
+        if (exeption2 != null ) {
+            exeption2.remove();
+        }
+        if (exeption3 != null ) {
+            exeption3.remove();
+        }
+        if (exeption4 != null ) {
+            exeption4.remove();
+        }
     }
   
 
     clickOnCard(e){ // menu of options for play 
-      
+        // console.log(e)
         var Selected = JSON.parse(e.toElement.parentElement.value);
         // console.log(Selected)
         var  divOptions = this.MYcreateAttr(document.createElement("div"), { class:"playOptions", id:"playOptions"});
@@ -379,7 +391,7 @@ class Table extends Deck{
 
          // menu of options for play
          var table = document.querySelector('.table');
-         console.log(table)
+        //  console.log(table)
       
          var leave =  this.MYcreateAttr(document.createElement('button'),
          {
@@ -445,7 +457,7 @@ class Table extends Deck{
             return cardCombinable;
         }
         var combinable =onlyNumber(this.cardsForTable);
-        console.log(combinable)
+        // console.log(combinable)
 
         var combinated = [], c = 1;
         combinable.forEach(card1 =>{
@@ -453,15 +465,18 @@ class Table extends Deck{
                 for (let index = c; index < combinable.length; index++) {
                          var cardComninated = [];
                         if (card1.img != combinable[index].img ) {
-                            cardComninated = [card1.value + combinable[index].value,card1.img, combinable[index].img]
-                            combinated.push(cardComninated)
+                            if ((card1.value + combinable[index].value) < 11) {
+                                cardComninated = [card1.value + combinable[index].value,card1.img, combinable[index].img]
+                                combinated.push(cardComninated)
+                            }
+                            
                         }
                     
                 }
                 c++;
            
         });
-        console.log(combinated)
+        // console.log(combinated)
         return combinated;
      }
 
@@ -477,19 +492,96 @@ class Table extends Deck{
             var div = this.MYcreateAttr(document.createElement("button"), {
                 class:'card',
                 id: 'card',
-                onclick: '',
+                onmouseover: 'game.table.pairCombinate(event);',
+                onclick: 'game.table.takeCombination(event);',
                 type: 'button',
-                value: element[0]
+                value: element
     
             });
             div.innerText = element[0]
-            combinateOption.appendChild(div)
+            combinateOption.appendChild(div);
+           
         });
         var table = document.querySelector(".table");
-        console.log(table)
+        // console.log(table)
         table.appendChild(combinateOption);
      }
 
+     pairCombinate(e) {
+        var exeption = document.getElementById('pairCombinate');
+        // console.log(exeption)
+        if(exeption != null){exeption.remove();}
+
+         var element = e.toElement.value.split(',');
+         const pairCombinate =  this.MYcreateAttr( document.createElement('div'), {class:'pairCombinate', id:'pairCombinate'});
+         var table = document.getElementById('combinateOption');
+         const com =  this.MYcreateAttr( document.createElement('div'), {class:'pairCombinate', id:'pairCombinate'});
+         com.innerText = 'Par cobinado';
+         pairCombinate.appendChild(com);
+         for (let index = 1; index < element.length; index++) {
+            var div = this.MYcreateAttr(document.createElement("button"), {
+                class:'card',
+                id: 'card',
+                type: 'button',
+                
+    
+            });
+            var img = this.MYcreateAttr(document.createElement('img'),{
+                src:element[index],
+                alt:"card",
+                class:"img"
+            });
+            div.appendChild(img);
+            pairCombinate.appendChild(div);
+         }
+        table.appendChild(pairCombinate);
+     }
+     
+     playerInTurn() {
+         var count = 0;
+        this.ObjectOfPlayes.forEach(element =>{
+            if(element.turn) { count+=1; }
+        });
+        return count - 1;
+     }
+
+     deleteCard(e) {
+         for (let index = 0; index < this.cardsForTable.length; index++) {
+            if (this.cardsForTable[index].img === e) {
+                this.ObjectOfPlayes[this.playerInTurn()].lotOfcard.push(this.cardsForTable[index])
+                this.cardsForTable.splice(index,1);
+            }
+         }
+        //  console.log(this.cardsForTable)
+     }
+
+     takeCombination(e){
+         var playerInTurn,count = 0;
+         var cardCombinateValue = e.toElement.value.split(',');
+        //  console.log(cardCombinateValue)
+        //  this.ObjectOfPlayes.forEach(element =>{
+        //     if(element.turn) { count+=1; }
+        // });
+        //  console.log(this.ObjectOfPlayes[count-1].cardsPlayer);
+        playerInTurn = this.ObjectOfPlayes[this.playerInTurn()];
+        for (let index = 0; index < playerInTurn.cardsPlayer.length; index++) {
+           console.log(playerInTurn.cardsPlayer[index].value);
+           console.log(parseInt(cardCombinateValue[0]))
+             if (playerInTurn.cardsPlayer[index].value === parseInt(cardCombinateValue[0])) {
+                playerInTurn.turn = true;
+                this.deleteCard(cardCombinateValue[1]);
+                this.deleteCard(cardCombinateValue[2]);
+                this.removeElements();
+                this.showCombinated();
+                this.deploy(this.cardsForTable,"container");
+                this.Display();
+            } else {
+                    console.log('Ninguna carta coincide');
+                
+             }
+            
+        }
+     }
     
  }
 
