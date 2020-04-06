@@ -293,7 +293,7 @@ class Table extends Deck{
         this.cardsForTable.push(newcardfortable);
         
         index =  this.ObjectOfPlayes[this.playerInTurn()].cardsPlayer.findIndex(element => element.color === newcardfortable.color && element.value == newcardfortable.value );
-       console.log(this.ObjectOfPlayes)
+        //console.log(this.ObjectOfPlayes)
         this.ObjectOfPlayes[this.playerInTurn()].cardsPlayer.splice(index,1);
         
     
@@ -303,13 +303,12 @@ class Table extends Deck{
         this.removeElements();
         this.showCombinated();
         this.deploy(this.cardsForTable,"container");
-        this.Display();      
+        this.Display();
+        this.dealAgain();      
     }
 
     takeCard(){
         let  cardForPlayer = [],count= 0,indexTable,indexPlayer, take= false ;
-        
-    
         // this.ObjectOfPlayes.forEach(element =>{
         //     if(element.turn) { count+=1; }
         // })
@@ -323,9 +322,9 @@ class Table extends Deck{
         this.cardsForTable.forEach((element) => {
             if(element.value === this.cardSelected[0]) {
                take = true ;
-                indexTable =  this.cardsForTable.findIndex(element => element.value === this.cardSelected[0] && element.color === this.cardSelected[2] );
-                indexPlayer =  this.ObjectOfPlayes[this.playerInTurn()].cardsPlayer.findIndex(element => element.value === this.cardSelected[0] && element.color === this.cardSelected[2] );
-                console.log(indexTable)
+                indexTable =  this.cardsForTable.findIndex(element => element.value === this.cardSelected[0] );
+                indexPlayer =  this.ObjectOfPlayes[this.playerInTurn()].cardsPlayer.findIndex(element => element.value === this.cardSelected[0] );
+               // console.log(indexTable)
                 
         
                 if (indexPlayer != -1){
@@ -337,7 +336,7 @@ class Table extends Deck{
                 this.ObjectOfPlayes[this.playerInTurn()].lotOfcard.push(element);
                 this.cardsForTable.splice(indexTable,1);
                
-                console.log(this.ObjectOfPlayes);
+                //console.log(this.ObjectOfPlayes);
             
             }
            
@@ -346,10 +345,11 @@ class Table extends Deck{
             this.removeElements();
             this.deploy(this.cardsForTable,"container");
             this.Display();
+            take = false;
         } else {
-            console.log('Ninguna carta coincide');
+            alert('Ninguna carta coincide');
         }
-       ;
+        this.dealAgain();
     }
 
     removeElements(){
@@ -399,12 +399,12 @@ class Table extends Deck{
              id:'leaveBtn',
              onclick: 'game.table.leaveCard()'
          });
-         var combine =  this.MYcreateAttr(document.createElement('button'),
+        /* var combine =  this.MYcreateAttr(document.createElement('button'),
          {
              class:'btn_S',
              id:'combineBtn',
              onclick:''
-         });
+         });*/
          var take =  this.MYcreateAttr(document.createElement('button'),
          {
              class:'btn_S',
@@ -413,12 +413,12 @@ class Table extends Deck{
          });
          
          leave.innerText = "Leave";
-         combine.innerText = "Combine"; // buttons option menu
+         //combine.innerText = "Combine"; // buttons option menu
          take.innerText = "Take";
        
           // for play Options
          divOptions.appendChild(leave);
-         divOptions.appendChild(combine);
+         //divOptions.appendChild(combine);
          divOptions.appendChild(take);
          table.appendChild(divOptions);
     }
@@ -558,6 +558,8 @@ class Table extends Deck{
      takeCombination(e){
          var playerInTurn,count = 0;
          var cardCombinateValue = e.toElement.value.split(',');
+         var alertSuccess = true;
+         
         //  console.log(cardCombinateValue)
         //  this.ObjectOfPlayes.forEach(element =>{
         //     if(element.turn) { count+=1; }
@@ -565,8 +567,8 @@ class Table extends Deck{
         //  console.log(this.ObjectOfPlayes[count-1].cardsPlayer);
         playerInTurn = this.ObjectOfPlayes[this.playerInTurn()];
         for (let index = 0; index < playerInTurn.cardsPlayer.length; index++) {
-           console.log(playerInTurn.cardsPlayer[index].value);
-           console.log(parseInt(cardCombinateValue[0]))
+           //console.log(playerInTurn.cardsPlayer[index].value);
+           //console.log(parseInt(cardCombinateValue[0]))
              if (playerInTurn.cardsPlayer[index].value === parseInt(cardCombinateValue[0])) {
                 playerInTurn.turn = true;
                 playerInTurn.lotOfcard.push(playerInTurn.cardsPlayer[index]);
@@ -578,6 +580,7 @@ class Table extends Deck{
                 this.deploy(this.cardsForTable,"container");
                 this.Display();
             } else {
+                
                 if (playerInTurn.cardsPlayer[index].value === 1 && parseInt(cardCombinateValue[0]) === 14 ) {
                     playerInTurn.turn = true;
                     playerInTurn.lotOfcard.push(playerInTurn.cardsPlayer[index]);
@@ -589,13 +592,44 @@ class Table extends Deck{
                     this.deploy(this.cardsForTable,"container");
                     this.Display();
                 }else{
-                    console.log('Ninguna carta coincide');
+                    if(alertSuccess) {
+                        //console.log(alertSuccess);
+                        alertSuccess = false
+                        alert('No tienes cartas para tomar esta combinación');
+                    }
+  
                 }
                     
                 
              }
             
         }
+        alertSuccess = true;
+        this.dealAgain();  
+     }
+     dealAgain(){
+        console.log(this.shuffledCards.length)
+        if (this.shuffledCards.length != 0){
+            let h2 = this.MYcreateAttr(document.createElement('h2'),{id:'dealText'});
+            h2.innerText = 'Repartiendo...';
+            let amountOfPlayer =  this.ObjectOfPlayes.length;
+            if (this.ObjectOfPlayes[amountOfPlayer-1].cardsPlayer.length === 0){
+                
+                document.getElementById('playerText').remove();
+                let div = document.getElementById('pla');
+                div.appendChild(h2);
+                //console.log('repartiendo..........')
+                this.deal(this.ObjectOfPlayes);
+                setTimeout(function(){ 
+                    h2.remove();
+                    game.table.Display();
+    
+                }, 3000);
+                
+            }
+        }
+       
+
      }
     
  }
