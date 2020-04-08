@@ -11,12 +11,14 @@ class Card{
 }
 
 class Player{
-    constructor(name){
+    constructor(name,id){
         this.name = name;
+        this.id = id;
         this.cardsPlayer = [];
         this.lotOfcard = [];
         this.score = 0;
         this.turn = false;
+        this.took = false;
     }
 }
 
@@ -29,6 +31,7 @@ class Deck extends Card{
     cardsValue = [1,2,3,4,5,6,7,8,9,10,11,12,13];
     cardsProperity = [];
     shuffledCards= [];
+    cardForShuffle = []
     cardsForTable = [];
     random = 0;
     picas = {
@@ -117,6 +120,8 @@ class Table extends Deck{
     }
     ObjectOfPlayes=[];
     cardSelected=[];
+    verifyWinner = false;
+
 
     MYcreateAttr(element, attributes ){ 
 
@@ -163,13 +168,14 @@ class Table extends Deck{
     deploy(playerObject,element){ // deploy card to the players and the table
         
         let playerCards;
+        var clickEvent ;
         
         if (playerObject instanceof Player){ 
             playerCards = playerObject.cardsPlayer;
-            // var namep = playerObject.name;
-            //console.log(obp.name)
+            clickEvent = 'game.table.clickOnCard(event);'
         }else{
             playerCards = playerObject;
+            clickEvent = ''
             
         }
 
@@ -210,15 +216,15 @@ class Table extends Deck{
             table.appendChild(div);
         };
         //console.log(div) 
-
-       let onclickAtt = function(){ 
-            if (playerObject instanceof Player){ 
-               return   'game.table.clickOnCard(event)';
-            }else{
-               return '';
-            }
+        //que es eso ?
+    //    let onclickAtt = function(){ 
+    //         if (playerObject instanceof Player){ 
+    //            return   'game.table.clickOnCard(event)';
+    //         }else{
+    //            return '';
+    //         }
           
-        }
+    //     }
         
         for (let index = 0; index < playerCards.length; index++) {
             
@@ -227,7 +233,7 @@ class Table extends Deck{
             const div1 = this.MYcreateAttr(document.createElement("button"), {
                 class:'card',
                 id: 'card',
-                onclick: 'game.table.clickOnCard(event);',
+                onclick: clickEvent,
                 type: 'button',
                 value: JSON.stringify(playerCards[index])
     
@@ -343,10 +349,12 @@ class Table extends Deck{
         });
         if (take){
             this.removeElements();
+            this.showCombinated();
             this.deploy(this.cardsForTable,"container");
             this.Display();
             take = false;
-        } else {
+            this.LastPlayerTook();
+                } else {
             alert('Ninguna carta coincide');
         }
         this.dealAgain();
@@ -357,7 +365,7 @@ class Table extends Deck{
         var exeption1= document.getElementById('container1'),
         exeption2 = document.getElementById('playerText'),
         exeption3 =  document.getElementById('tableText'),
-        exeption4= document.getElementById('playOptions')
+        exeption4 = document.getElementById('playOptions')
         if (exeption1 != null ) {
             exeption1.remove();
         }
@@ -430,7 +438,7 @@ class Table extends Deck{
         const namePlayers = document.getElementsByName("playersname");
        //  console.log(namePlayers);
        for (let index = 0; index < namePlayers.length; index++) {
-           this.ObjectOfPlayes.push(new Player(namePlayers[index].value));
+           this.ObjectOfPlayes.push(new Player(namePlayers[index].value,index));
        }
        document.getElementById('divs').remove();
        this.shufflingCards(this.createDeck());
@@ -545,6 +553,19 @@ class Table extends Deck{
         return count - 1;
      }
 
+     LastPlayerTook() {
+         this.ObjectOfPlayes.forEach(player => {
+            if (this.ObjectOfPlayes[this.playerInTurn()].id === player.id) {
+                player.took = true;
+                // console.log('true')
+            }else{
+                 player.took = false;
+                // console.log('false')
+
+            }
+         });
+     }
+
      deleteCard(e) {
          for (let index = 0; index < this.cardsForTable.length; index++) {
             if (this.cardsForTable[index].img === e) {
@@ -571,6 +592,7 @@ class Table extends Deck{
            //console.log(parseInt(cardCombinateValue[0]))
              if (playerInTurn.cardsPlayer[index].value === parseInt(cardCombinateValue[0])) {
                 playerInTurn.turn = true;
+                this.LastPlayerTook();
                 playerInTurn.lotOfcard.push(playerInTurn.cardsPlayer[index]);
                 playerInTurn.cardsPlayer.splice(index,1);
                 this.deleteCard(cardCombinateValue[1]);
@@ -583,6 +605,7 @@ class Table extends Deck{
                 
                 if (playerInTurn.cardsPlayer[index].value === 1 && parseInt(cardCombinateValue[0]) === 14 ) {
                     playerInTurn.turn = true;
+                    this.LastPlayerTook();
                     playerInTurn.lotOfcard.push(playerInTurn.cardsPlayer[index]);
                     playerInTurn.cardsPlayer.splice(index,1);
                     this.deleteCard(cardCombinateValue[1]);
@@ -595,7 +618,7 @@ class Table extends Deck{
                     if(alertSuccess) {
                         //console.log(alertSuccess);
                         alertSuccess = false
-                        alert('No tienes cartas para tomar esta combinación');
+                        // alert('No tienes cartas para tomar esta combinación');
                     }
   
                 }
@@ -607,13 +630,69 @@ class Table extends Deck{
         alertSuccess = true;
         this.dealAgain();  
      }
+
+     scoring() {
+        function verifyWinnerOfPoint(array,ObjectOfPlayes,get) {
+                var maxGet = Math.max(...array),
+                    indexOfWinner = array.indexOf(maxGet);
+                if (array.indexOf(maxGet, indexOfWinner+1) === -1) {
+                    ObjectOfPlayes[indexOfWinner].score += get;
+                }
+        }
+
+        
+        var mostPicas=[], mostCards = [], stackScore = [];
+        this.ObjectOfPlayes.forEach(player =>{
+            var picas = 0;
+            mostCards.push(player.lotOfcard.length);
+            player.lotOfcard.forEach(element =>{
+                if (element.value === 1) {
+                    player.score += 1;
+                }
+                if (element.value === 2 && element.type === 'picas' ) {
+                    player.score += 1;
+                }
+                if (element.value === 10 && element.type === 'diamond' ) {
+                    player.score += 2;
+                }
+                if (element.type === 'picas') {
+                    picas += 1;
+                }
+                
+            });
+            mostPicas.push(picas);
+            Array.prototype.push.apply(this.cardForShuffle, player.lotOfcard);
+            player.lotOfcard = [];
+
+         });
+        // //  console.log(this.ObjectOfPlayes)
+        //  console.log(mostPicas)
+        //  console.log(mostCards)
+         verifyWinnerOfPoint(mostCards,this.ObjectOfPlayes,3);
+         verifyWinnerOfPoint(mostPicas,this.ObjectOfPlayes,1);
+
+         this.ObjectOfPlayes.forEach(e =>{
+            stackScore.push(e.score);
+         })
+
+         var x = Math.max(...stackScore)
+         if (x > 20) {
+             this.verifyWinner = true;
+             console.log(this.verifyWinner,x);
+         }
+         console.log(this.verifyWinner,x);
+        //  console.log(this.ObjectOfPlayes)
+     
+}
+         
      dealAgain(){
         console.log(this.shuffledCards.length)
+        const amountOfPlayer =  this.ObjectOfPlayes.length - 1;
         if (this.shuffledCards.length != 0){
             let h2 = this.MYcreateAttr(document.createElement('h2'),{id:'dealText'});
             h2.innerText = 'Repartiendo...';
-            let amountOfPlayer =  this.ObjectOfPlayes.length;
-            if (this.ObjectOfPlayes[amountOfPlayer-1].cardsPlayer.length === 0){
+            
+            if (this.ObjectOfPlayes[amountOfPlayer].cardsPlayer.length === 0){
                 
                 document.getElementById('playerText').remove();
                 let div = document.getElementById('pla');
@@ -627,6 +706,49 @@ class Table extends Deck{
                 }, 3000);
                 
             }
+        }else{
+            if (this.ObjectOfPlayes[amountOfPlayer].cardsPlayer.length === 0){
+                        for (let index = 0; index < this.ObjectOfPlayes.length; index++) {
+                            if (this.ObjectOfPlayes[index].took) {
+                                Array.prototype.push.apply(this.ObjectOfPlayes[index].lotOfcard, this.cardsForTable);
+                                this.cardsForTable = [];
+                                break;
+                            }
+                            
+                        }
+                        this.scoring();
+                        if(this.verifyWinner){
+                            console.log('El ganador es:')
+                            for(let index = 0 ; index< this.ObjectOfPlayes.length; index ++){
+                                if (this.ObjectOfPlayes[index].score > 21) {
+                                    let h2 = this.MYcreateAttr(document.createElement('h2'),{id:'dealText'});
+                                    h2.innerText = 'El ganador es:'+ this.ObjectOfPlayes[index].name + 'Id:' + this.ObjectOfPlayes[index].id;
+                                    document.getElementById('table').remove();
+                                    let div = document.getElementById('out_table');
+                                    div.appendChild(h2);
+                                    break;
+                                }
+                            }
+                        }else{
+                            this.shufflingCards(this.cardForShuffle);
+                            let h2 = this.MYcreateAttr(document.createElement('h2'),{id:'dealText'});
+                            h2.innerText = 'Barajando.....';
+                            document.getElementById('playerText').remove();
+                            let div = document.getElementById('pla');
+                            div.appendChild(h2);
+                            //console.log('repartiendo..........')
+                            this.deal(this.ObjectOfPlayes);
+                            setTimeout(function(){ 
+                                h2.remove();
+                                game.table.Display();
+                
+                            }, 3000);
+                            
+                            
+                        }
+                
+            }
+            
         }
        
 
