@@ -190,28 +190,12 @@ class Table extends Deck {
             if (index === (numOfP - 1)) {
                 let btn = document.createElement("button");
                 btn.innerText = "Play";
-<<<<<<< HEAD
-                table.insertBefore(this.MYcreateAttr(document.createElement("br"), {}), null);
-                table.insertBefore(this.MYcreateAttr(btn, {
-                    class: "inputs",
-                    name: "Play",
-                    onclick: 'game.table.goPlay();'
-                }), null);
-||||||| 6ee14c1
-                table.insertBefore(this.MYcreateAttr(document.createElement("br"),{}),null);
-                table.insertBefore(this.MYcreateAttr(btn,{
-                    class:"btn_S",
-                    name:"Play",
-                    onclick:'game.table.goPlay();'
-                }),null);    
-=======
                 table.insertBefore(this.MYcreateAttr(document.createElement("br"), {}), null);
                 table.insertBefore(this.MYcreateAttr(btn, {
                     class: "btn_S",
                     name: "Play",
                     onclick: 'game.table.goPlay();'
                 }), null);
->>>>>>> 73312322991fd8fcc46488cda6a84ead60c6fd43
             }
 
 
