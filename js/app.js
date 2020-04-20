@@ -1,15 +1,12 @@
-/************************** CLASSES ***********************/
-class Card {
-    constructor(value, type, color) {
+/************************** constructor ***********************/
+function Card (value, type, color) {
         this.value = value;
         this.type = type;
         this.color = color;
         this.img = ("./image/" + this.value + this.color + this.type + ".PNG");
     }
-}
 
-class Player {
-    constructor(name, id) {
+function Player (name, id) {
         this.name = name;
         this.id = id;
         this.cardsPlayer = [];
@@ -18,7 +15,8 @@ class Player {
         this.turn = false;
         this.took = false;
     }
-}
+
+/************************** clases ***********************/
 
 class Deck {
     constructor() {
@@ -175,6 +173,40 @@ class Table extends Deck {
         this.showCombinated();
         this.deploy(this.cardsForTable, "container");
         this.Display();
+    }
+    handleCards(status) {
+        this.remove('playerText');
+        let h2 = this.MYcreateAttr(document.createElement('h2'), { id: 'dealText' });
+        h2.innerText = status;
+        let div = document.getElementById('playerView');
+        div.appendChild(h2);
+        this.players.forEach(player => {
+            player.turn = false;
+        });
+
+        this.deal(this.players);
+        setTimeout(function () {
+            h2.remove();
+            game.table.Display();
+        }, 3000);
+    }
+    handleWinner() {
+        let h2 = this.MYcreateAttr(document.createElement('div'), { class:'winnerText' ,id: 'winnerText' });
+        h2.innerText = 'El ganador es:' + this.players[index].name + ' Id: ' + this.players[index].id;
+        this.remove('table');
+        let out_table = document.getElementById('out_table');
+        let div = this.MYcreateAttr(document.createElement('div'), {
+            class: "table"
+        });
+        const img = this.MYcreateAttr(document.createElement("img"),
+        {
+            src: './image/winner.jpg',
+            alt: "card",
+            class: 'imgWinner'
+        });
+        out_table.appendChild(h2);
+        div.appendChild(img);
+        out_table.appendChild(div);
     }
 
     getParticipantsName(participants) {
@@ -572,21 +604,7 @@ class Table extends Deck {
         if (this.shuffledCards.length != 0) {
             
             if (verifyCardsForDealAgain()) {
-                this.remove('playerText');
-                let h2 = this.MYcreateAttr(document.createElement('h2'), { id: 'dealText' });
-                h2.innerText = 'Repartiendo...';
-                let div = document.getElementById('playerView');
-                div.appendChild(h2);
-                this.players.forEach(player => {
-                    player.turn = false;
-                });
-
-                this.deal(this.players);
-                setTimeout(function () {
-                    h2.remove();
-                    game.table.Display();
-                }, 3000);
-
+                this.handleCards('Repartiendo...');
             }
         } else {
             if (verifyCardsForDealAgain()) {
@@ -597,52 +615,18 @@ class Table extends Deck {
                         this.cardsForTable = [];
                         break;
                     }
-
                 }
-
                 this.scoring();
                 if (this.verifyWinner) {
                     for (let index = 0; index < this.players.length; index++) {
                         if (this.players[index].score > 20) {
-                            let h2 = this.MYcreateAttr(document.createElement('div'), { class:'winnerText' ,id: 'winnerText' });
-                            h2.innerText = 'El ganador es:' + this.players[index].name + ' Id: ' + this.players[index].id;
-                           this.remove('table');
-                            let out_table = document.getElementById('out_table');
-                            let div = this.MYcreateAttr(document.createElement('div'), {
-                                class: "table"
-                            });
-                            const img = this.MYcreateAttr(document.createElement("img"),
-                            {
-                                src: './image/winner.jpg',
-                                alt: "card",
-                                class: 'imgWinner'
-                            });
-                            out_table.appendChild(h2);
-                            div.appendChild(img);
-                            out_table.appendChild(div);
+                            this.handleWinner();
                             break;
                         }
                     }
                 } else {
                     this.shufflingCards(this.cardForShuffle);
-                    let h2 = this.MYcreateAttr(document.createElement('h2'), { id: 'dealText' });
-                    h2.innerText = 'Barajando.....';
-                    this.remove('playerText');
-                    let div = document.getElementById('playerView');
-                    div.appendChild(h2);
-                    this.players.forEach(player => {
-                        player.turn = false;
-                    });
-                    this.deal(this.players);
-                    this.showCombinated();
-                    this.deploy(this.cardsForTable, "container");
-                    setTimeout(function () {
-                        h2.remove();
-                        game.table.Display();
-
-                    }, 3000);
-
-
+                    this.handleCards('Barajando...');
                 }
 
             }
