@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,20 +12,17 @@
 <body>
   <div id='out_table'>
     <!-- nav bar  -->
-    <nav class="title">Juego de cartas: Casino</nav>
+    <h1 class="title" id="title">Juego de cartas: Casino </h1> 
     <div class="table" id='table'>
-      <form id="player">
-        <div id="playss">
-          <div id="n">
-            <label for="fname">cantidad de jugadores:</label><br>
-            <input class="btn_S" type="number" required id="numOfP" name="fname"><br>
-            <input class="btn_S" type="submit" value="send">
-          </div>
-        </div>
+      <form id='participants'>
+      
+            <label >cantidad de jugadores:</label><br>
+            <input class="inputs" type="number" required id="quantity" ><br>
+            <input class="inputs" type="submit" value="send">
+
       </form>
     </div>
     <script src="./js/app.js"></script>
   </div>
 </body>
-
 </html>
