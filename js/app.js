@@ -111,12 +111,13 @@ class Table extends Deck {
     
     
     playerInTurn() {
-        var count = 0;
+        let count = 0;
         this.players.forEach(element => {
             if (element.turn) { count += 1; }
         });
         return count - 1;
     }
+
     MYcreateAttr(element, attributes) {
 
         Object.keys(attributes).forEach(key => {
@@ -126,7 +127,7 @@ class Table extends Deck {
     }
     
     remove(id){
-        var e = document.getElementById(id);
+        let e = document.getElementById(id);
         if (e != null) {
             e.remove();
         }
@@ -152,7 +153,7 @@ class Table extends Deck {
     }
 
      emptyCardSelectedArray() { // remove values fron array cardSelected
-        var index = 0;
+        let index = 0;
         while (index <= this.cardSelected.length) {
             this.cardSelected.pop();
             if (this.cardSelected.length == 0) {
@@ -177,8 +178,8 @@ class Table extends Deck {
     }
 
     getParticipantsName(participants) {
-        const form = this.MYcreateAttr(document.createElement("form"), { id: "participants" });
-        var table = document.querySelector('.table');
+        let form = this.MYcreateAttr(document.createElement("form"), { id: "participants" });
+        let table = document.querySelector('.table');
 
         table.appendChild(form);
         table = document.getElementById("participants");
@@ -213,7 +214,7 @@ class Table extends Deck {
     deploy(playerObject, element) { // deploy card to the players and the table
 
         let playerCards;
-        var clickEvent;
+        let clickEvent;
 
         if (playerObject instanceof Player) {
             playerCards = playerObject.cardsPlayer;
@@ -224,8 +225,8 @@ class Table extends Deck {
 
         }
 
-        var table = document.querySelector('.table');
-        var div, h2;
+        let table = document.querySelector('.table');
+        let div, h2;
         this.remove('playerView');
 
         if (element === "player_info") {
@@ -258,7 +259,7 @@ class Table extends Deck {
         };
 
         for (let index = 0; index < playerCards.length; index++) {
-            const div1 = this.MYcreateAttr(document.createElement("button"), {
+            let div1 = this.MYcreateAttr(document.createElement("button"), {
                 class: 'card',
                 id: 'card',
                 onclick: clickEvent,
@@ -266,7 +267,7 @@ class Table extends Deck {
                 value: JSON.stringify(playerCards[index])
             });
             div.appendChild(div1);
-            const img = this.MYcreateAttr(document.createElement("img"),
+            let img = this.MYcreateAttr(document.createElement("img"),
                 {
                     src: playerCards[index].img,
                     alt: "card",
@@ -298,7 +299,7 @@ class Table extends Deck {
     };
 
     leaveCard() { // for leave cards on the table
-        let count = 0, index, playerSelected;
+        let index;
         var newcardfortable = new Card(this.cardSelected[0], this.cardSelected[1], this.cardSelected[2]);
         this.emptyCardSelectedArray();
         this.cardsForTable.push(newcardfortable);
@@ -350,13 +351,11 @@ class Table extends Deck {
 
 
     clickOnCard(e) { // menu of options for play 
-        // console.log(e.toElement.parentElement.value)
         if (e.toElement.parentElement.value === undefined) {
             alert('porfavor haga click ensima de la carta');
         } else {
             var Selected = JSON.parse(e.toElement.parentElement.value);
-        // console.log(Selected)
-        var divOptions = this.MYcreateAttr(document.createElement("div"), { class: "playOptions", id: "playOptions" });
+        let divOptions = this.MYcreateAttr(document.createElement("div"), { class: "playOptions", id: "playOptions" });
         this.remove('playOptions');
         this.emptyCardSelectedArray();
 
@@ -365,14 +364,14 @@ class Table extends Deck {
         });
 
         // menu of options for play
-        var table = document.querySelector('.table');
-        var leave = this.MYcreateAttr(document.createElement('button'),
+        let table = document.querySelector('.table');
+        let leave = this.MYcreateAttr(document.createElement('button'),
             {
                 class: 'inputs',
                 id: 'leaveBtn',
                 onclick: 'game.table.leaveCard()'
             });
-        var take = this.MYcreateAttr(document.createElement('button'),
+        let take = this.MYcreateAttr(document.createElement('button'),
             {
                 class: 'inputs',
                 id: 'leaveBtn',
@@ -392,7 +391,7 @@ class Table extends Deck {
 
     goPlay() {
         const namePlayers = document.getElementsByName("player");
-        console.log(namePlayers.length)
+        // console.log(namePlayers.length)
         for (let index = 0; index < namePlayers.length; index++) {
             this.players.push(new Player(namePlayers[index].value, index));
         }
@@ -405,7 +404,7 @@ class Table extends Deck {
     }
 
     combination() {
-        var combinated = [], c = 1;
+        let combinated = [], c = 1;
         this.cardsForTable.forEach(card1 => {
 
             for (let index = c; index < this.cardsForTable.length; index++) {
@@ -426,11 +425,11 @@ class Table extends Deck {
     showCombinated() {
         this.remove('combinate_option');
 
-        var cardCombinate = this.combination();
+        let cardCombinate = this.combination();
         const combinate_option = this.MYcreateAttr(document.createElement('div'), { class: 'combinate_option', id: 'combinate_option' });
 
         cardCombinate.forEach(element => {
-            var div = this.MYcreateAttr(document.createElement("button"), {
+            let div = this.MYcreateAttr(document.createElement("button"), {
                 class: 'card card_combinate',
                 id: 'card',
                 onmouseover: 'game.table.pairCombinate(event);',
@@ -442,7 +441,7 @@ class Table extends Deck {
             div.innerText = element[0]
             combinate_option.appendChild(div);
         });
-        var table = document.querySelector(".table");
+        let table = document.querySelector(".table");
         table.appendChild(combinate_option);
     }
 
@@ -451,17 +450,17 @@ class Table extends Deck {
 
         const element = e.toElement.value.split(',');
         const pairCombinate = this.MYcreateAttr(document.createElement('div'), { class: 'pairCombinate', id: 'pairCombinate' });
-        var table = document.getElementById('combinate_option');
+        let table = document.getElementById('combinate_option');
         const title = this.MYcreateAttr(document.createElement('h2'), { class: 'titleText', id: 'pairCombinate' });
         title.innerText = 'Par cobinado';
         pairCombinate.appendChild(title);
         for (let index = 1; index < element.length; index++) {
-            var div = this.MYcreateAttr(document.createElement("button"), {
+            let div = this.MYcreateAttr(document.createElement("button"), {
                 class: 'card',
                 id: 'card',
                 type: 'button',
             });
-            var img = this.MYcreateAttr(document.createElement('img'), {
+            let img = this.MYcreateAttr(document.createElement('img'), {
                 src: element[index],
                 alt: "card",
                 class: "img"
@@ -473,8 +472,8 @@ class Table extends Deck {
     }
 
     takeCombination(e) {
-        var playerInTurn;
-        var cardCombinateValue = e.toElement.value.split(',');
+        let playerInTurn;
+        let cardCombinateValue = e.toElement.value.split(',');
       
         playerInTurn = this.players[this.playerInTurn()];
         for (let index = 0; index < playerInTurn.cardsPlayer.length; index++) {
@@ -506,7 +505,7 @@ class Table extends Deck {
 
     scoring() {
         function verifyWinnerOfPoint(array, players, get) {
-            var maxGet = Math.max(...array),
+            let maxGet = Math.max(...array),
                 indexOfWinner = array.indexOf(maxGet);
             if (array.indexOf(maxGet, indexOfWinner + 1) === -1) {
                 players[indexOfWinner].score += get;
@@ -514,7 +513,7 @@ class Table extends Deck {
         }
 
 
-        var mostPicas = [], mostCards = [], stackScore = [];
+        let mostPicas = [], mostCards = [], stackScore = [];
         this.players.forEach(player => {
             var picas = 0;
             mostCards.push(player.lotOfcard.length);
@@ -547,8 +546,8 @@ class Table extends Deck {
             stackScore.push(e.score);
         })
 
-        var x = Math.max(...stackScore)
-        if (x > 20) {
+        let maxStackScore = Math.max(...stackScore)
+        if (maxStackScore > 20) {
             this.verifyWinner = true;
             // console.log(this.verifyWinner, x);
         }
