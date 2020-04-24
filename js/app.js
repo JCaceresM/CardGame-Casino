@@ -222,6 +222,40 @@ class Table extends Deck {
         div.appendChild(img);
         out_table.appendChild(div);
     }
+    handleCards(status) {
+        this.remove('playerText');
+        let h2 = this.MYcreateAttr(document.createElement('h2'), { id: 'dealText' });
+        h2.innerText = status;
+        let div = document.getElementById('playerView');
+        div.appendChild(h2);
+        this.players.forEach(player => {
+            player.turn = false;
+        });
+
+        this.deal(this.players);
+        setTimeout(function () {
+            h2.remove();
+            game.table.Display();
+        }, 3000);
+    }
+    handleWinner() {
+        let h2 = this.MYcreateAttr(document.createElement('div'), { class:'winnerText' ,id: 'winnerText' });
+        h2.innerText = 'El ganador es:' + this.players[index].name + ' Id: ' + this.players[index].id;
+        this.remove('table');
+        let out_table = document.getElementById('out_table');
+        let div = this.MYcreateAttr(document.createElement('div'), {
+            class: "table"
+        });
+        const img = this.MYcreateAttr(document.createElement("img"),
+        {
+            src: './image/winner.jpg',
+            alt: "card",
+            class: 'imgWinner'
+        });
+        out_table.appendChild(h2);
+        div.appendChild(img);
+        out_table.appendChild(div);
+    }
 
     getParticipantsName(participants) {
         let form = this.MYcreateAttr(document.createElement("form"), { id: "participants" });
