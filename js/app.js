@@ -98,12 +98,7 @@ class Deck {
                 player.cardsPlayer.push(this.cards.pop());
             }
         }
-        // for (let ind = 0; ind < players.length; ind++) {
-        //     for (let index = 0; index < 4; index++) {
-        //         players[ind].cardsPlayer.push(this.cards.pop());
-
-        //     }
-        // }
+ 
     }
 
 }
@@ -144,11 +139,6 @@ class Table extends Deck {
     LastPlayerTook() {
         this.players.forEach(player => {
             player.lastWhoTook = this.players[this.playerInTurn()].id === player.id ? true : false;
-            // if (this.players[this.playerInTurn()].id === player.id) {
-            //     player.lastWhoTook = true;
-            // } else {
-            //     player.lastWhoTook = false;
-            // }
         });
     }
 
@@ -183,19 +173,6 @@ class Table extends Deck {
         }
         return div
     }
-
-    // emptyCardSelectedArray() { // remove values fron array cardSelected
-       
-    //     let index = 0;
-    //     while (index <= this.cardSelected.length) {
-    //         this.cardSelected.pop();
-    //         if (this.cardSelected.length == 0) {
-    //               break;
-    //          }
-    //         index++;
-    //     }
-    //     this.cardSelected.pop();
-    // }
 
     handleCombinationProcess(playerInTurn,cardsCombinated, card){
         let index = playerInTurn.cardsPlayer.findIndex(element => element.value === card.value && element.type === card.type );
@@ -335,15 +312,6 @@ class Table extends Deck {
         let playerCards = playerObject instanceof Player ? playerObject.cardsPlayer : playerObject;
         let clickEvent = playerObject instanceof Player ? 'game.table.clickOnCard(event);' : '';
 
-        // if (playerObject instanceof Player) {
-        //     playerCards = playerObject.cardsPlayer;
-        //     clickEvent = 'game.table.clickOnCard(event);'
-        // } else {
-        //     playerCards = playerObject;
-        //     clickEvent = ''
-
-        // }
-
         let table = document.querySelector('.table');
         let div, h2;
         this.remove('playerView');
@@ -377,44 +345,6 @@ class Table extends Deck {
             table.appendChild(div);
         };
         this.loopForShowCard(playerCards, div, clickEvent);
-        // for (const card of playerCards) {
-        //     let div1 = this.MYcreateAttr(document.createElement("button"), {
-        //         class: 'card',
-        //         id: 'card',
-        //         onclick: clickEvent,
-        //         type: 'button',
-        //         value: JSON.stringify(card)
-        //     });
-        //     div.appendChild(div1);
-        //     let img = this.MYcreateAttr(document.createElement("img"),
-        //         {
-        //             src: card.img,
-        //             alt: "card",
-        //             class: "img"
-    
-        //         });
-        //     div1.appendChild(img);
-        // }
-        
-
-        // for (let index = 0; index < playerCards.length; index++) {
-        //     let div1 = this.MYcreateAttr(document.createElement("button"), {
-        //         class: 'card',
-        //         id: 'card',
-        //         onclick: clickEvent,
-        //         type: 'button',
-        //         value: JSON.stringify(playerCards[index])
-        //     });
-        //     div.appendChild(div1);
-        //     let img = this.MYcreateAttr(document.createElement("img"),
-        //         {
-        //             src: playerCards[index].img,
-        //             alt: "card",
-        //             class: "img"
-
-        //         });
-        //     div1.appendChild(img);
-        // }
 
     }
 
@@ -438,15 +368,10 @@ class Table extends Deck {
     };
 
     leaveCard() { // for leave cards on the table
-        // console.log(this.cardSelected)
         let [value, type, color] = this.cardSelected;
-        // console.log(vale, type, color)
-        // console.log(this.cardSelected[0], this.cardSelected[1], this.cardSelected[2])
         let index;
         var newcardfortable = new Card(value, type, color);
         this.cardSelected = []
-        // console.log(this.cardSelected)
-        // this.emptyCardSelectedArray();
         this.cardsForTable.push(newcardfortable);
 
         index = this.players[this.playerInTurn()].cardsPlayer.findIndex(element => element.color === newcardfortable.color && element.value == newcardfortable.value);
@@ -461,11 +386,9 @@ class Table extends Deck {
 
     takeCard() {
         let  indexTable, indexPlayer, take = false, [valueSelected] = this.cardSelected;
-        // console.log(value)
         indexPlayer = this.players[this.playerInTurn()].cardsPlayer.findIndex(element => element.value === this.cardSelected[0]);
         this.cardsForTable.forEach((element) => {
             if (element.value === valueSelected) {
-                // console.log(this.cardSelected[0])
                 take = true;
                 indexTable = this.cardsForTable.findIndex(element => element.value === valueSelected);
                 this.players[this.playerInTurn()].lotOfcard.push(element);
@@ -504,7 +427,6 @@ class Table extends Deck {
         let divOptions = this.MYcreateAttr(document.createElement("div"), { class: "playOptions", id: "playOptions" });
         this.remove('playOptions');
         this.cardSelected = [];
-        // this.emptyCardSelectedArray();
 
         Object.keys(Selected).forEach(key => {
             this.cardSelected.push(Selected[key]);
@@ -605,28 +527,12 @@ class Table extends Deck {
         div.appendChild(title);
         div.appendChild(document.createElement("br")); 
         let div1 = this.loopForShowCard([card2,card1], div);
-        // console.log(div)
-        // for (let index = 1; index < element.length; index++) {
-        //     let button = this.MYcreateAttr(document.createElement("button"), {
-        //         class: 'card',
-        //         id: 'card',
-        //         type: 'button',
-        //     });
-        //     let img = this.MYcreateAttr(document.createElement('img'), {
-        //         src: element[index],
-        //         alt: "card",
-        //         class: "img"
-        //     });
-        //     button.appendChild(img);
-        //     div.appendChild(button);
-        // }
         table.appendChild(div1);
     }
 
     takeCombination(e) { // take the card combinated and the card that has the same value in the table 
         let playerInTurn = this.players[this.playerInTurn()], cardsCombinated = e.toElement.value.split(',');
         let [value] = cardsCombinated;
-        // console.log(valuey)
         for (const card of playerInTurn.cardsPlayer) {
             
             if (card.value === parseInt(value)) {
@@ -692,10 +598,8 @@ class Table extends Deck {
         })
         // this block of code determinate if one player won
         let maxStackScore = Math.max(...stackScore)
-        if (maxStackScore > 20) {
-            this.verifyWinner = true;
+        this.verifyWinner = maxStackScore > 20 ? true: false;
             // console.log(this.verifyWinner, x);
-        }
     }
 
     dealAgain() {
@@ -723,17 +627,18 @@ class Table extends Deck {
         } else {
             if (verifyCardsForDealAgain()) {
                 // give the card in the table to lastplayertook
-                for (let index = 0; index < this.players.length; index++) {
-                    if (this.players[index].lastWhoTook) {
-                        Array.prototype.push.apply(this.players[index].lotOfcard, this.cardsForTable);
+                for (const player of this.players) {
+                    if (player.lastWhoTook) {
+                        Array.prototype.push.apply(player.lotOfcard, this.cardsForTable);
                         this.cardsForTable = [];
                         break;
                     }
                 }
+
                 this.scoring();
                 if (this.verifyWinner) {
-                    for (let index = 0; index < this.players.length; index++) {
-                        if (this.players[index].score > 20) {
+                    for (const player of  this.players) {
+                        if (player.score > 20) {
                             this.handleWinner();
                             break;
                         }
