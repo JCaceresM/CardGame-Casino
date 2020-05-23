@@ -224,17 +224,24 @@ class Table extends Deck {
       game.table.handleTurn();
     }, 3000);
   }
-
+  checkWhoWon() {
+    for (const player of this.players) {
+      if (player.score > 20) {
+        this.handleWinner();
+        break;
+      }
+    }
+  }
   handleWinner() {
     let h2 = this.MYcreateAttr(document.createElement("div"), {
       class: "winnerText",
       id: "winnerText",
     });
     h2.innerText =
-      "El ganador es:" +
-      this.players[index].name +
-      " Id: " +
-      this.players[index].id;
+    "El ganador es:" +
+    this.players[index].name +
+    " Id: " +
+    this.players[index].id;
     this.removeElementDom("table");
     let out_table = document.getElementById("out_table");
     let div = this.MYcreateAttr(document.createElement("div"), {
@@ -249,7 +256,31 @@ class Table extends Deck {
     div.appendChild(img);
     out_table.appendChild(div);
   }
-
+  // handleWinner() {
+  //   let h2 = this.MYcreateAttr(document.createElement("div"), {
+  //     class: "winnerText",
+  //     id: "winnerText",
+  //   });
+  //   h2.innerText =
+  //     "El ganador es:" +
+  //     this.players[index].name +
+  //     " Id: " +
+  //     this.players[index].id;
+  //   this.removeElementDom("table");
+  //   let out_table = document.getElementById("out_table");
+  //   let div = this.MYcreateAttr(document.createElement("div"), {
+  //     class: "table",
+  //   });
+  //   const img = this.MYcreateAttr(document.createElement("img"), {
+  //     src: "./image/winner.jpg",
+  //     alt: "card",
+  //     class: "imgWinner",
+  //   });
+  //   out_table.appendChild(h2);
+  //   div.appendChild(img);
+  //   out_table.appendChild(div);
+  // }
+  
   handleCards(status) {
     this.removeElementDom("playerText");
     let h2 = this.MYcreateAttr(document.createElement("h2"), {
@@ -267,30 +298,6 @@ class Table extends Deck {
       h2.removeElementDom();
       game.table.Display();
     }, 3000);
-  }
-  handleWinner() {
-    let h2 = this.MYcreateAttr(document.createElement("div"), {
-      class: "winnerText",
-      id: "winnerText",
-    });
-    h2.innerText =
-      "El ganador es:" +
-      this.players[index].name +
-      " Id: " +
-      this.players[index].id;
-    this.removeElementDom("table");
-    let out_table = document.getElementById("out_table");
-    let div = this.MYcreateAttr(document.createElement("div"), {
-      class: "table",
-    });
-    const img = this.MYcreateAttr(document.createElement("img"), {
-      src: "./image/winner.jpg",
-      alt: "card",
-      class: "imgWinner",
-    });
-    out_table.appendChild(h2);
-    div.appendChild(img);
-    out_table.appendChild(div);
   }
 
   getParticipantsName(participants) {
@@ -311,23 +318,23 @@ class Table extends Deck {
       });
 
       table.insertBefore(newElement, null);
-      if (index === participants - 1) {
-        let btn = document.createElement("button");
-        btn.innerText = "Play";
-        table.insertBefore(
-          this.MYcreateAttr(document.createElement("br"), {}),
-          null
-        );
-        table.insertBefore(
-          this.MYcreateAttr(btn, {
-            class: "inputs",
-            name: "Play",
-            onclick: "game.table.goPlay();",
-          }),
-          null
-        );
+      // if (index === participants - 1) {
+        // }
       }
-    }
+      let btn = document.createElement("button");
+      btn.innerText = "Play";
+      table.insertBefore(
+        this.MYcreateAttr(document.createElement("br"), {}),
+        null
+      );
+      table.insertBefore(
+        this.MYcreateAttr(btn, {
+          class: "inputs",
+          name: "Play",
+          onclick: "game.table.goPlay();",
+        }),
+        null
+      );
   }
   //look others card with the same value of combinated card in the table when the player take a combination.
   lookOthersCard(value) {
@@ -719,12 +726,7 @@ class Table extends Deck {
 
         this.scoring();
         if (this.verifyWinner) {
-          for (const player of this.players) {
-            if (player.score > 20) {
-              this.handleWinner();
-              break;
-            }
-          }
+           this.checkWhoWon();
         } else {
           this.shufflingCards(this.cardForShuffle);
           this.prepereTableCards();
