@@ -64,20 +64,22 @@ class Deck {
      * shuffling cards
      * this function is used to deal the cards after each game
      */
-    while (true) {
-      if (!cards.length) {
-        break;
-      }
+    while (cards.length) {
+      // if () {
+      //   break;
+      // }
       this.random = Math.floor(Math.random() * cards.length);
       this.cards.push(cards[this.random]);
       cards.splice(this.random, 1);
     }
-
+    
+    
+  }
+   prepereTableCards () {
     for (let index = 0; index < 4; index++) {
       this.cardsForTable.push(this.cards.pop());
     }
-  }
-
+   }
   dealCardsToPlayers(players) {
     //dealCardsToPlayersing cards
     for (const player of players) {
@@ -98,12 +100,24 @@ class Table extends Deck {
 
   playerInTurn() {
     let count = 0;
-    this.players.forEach((element) => {
-      if (element.turn) {
+    this.players.forEach((player) => {
+      if (player.turn) {
         count += 1;
       }
     });
     return count - 1;
+  }
+  handleParticipantSubmit = (e) => {
+    e.preventDefault();
+    let participants = 0;
+      participants = parseInt(document.getElementById("quantity").value);
+      if (participants > 1 && participants < 5) {
+        document.getElementById("participants").remove();
+        game.initGame(participants);
+      } else {
+        alert("Debe introducir de 2 a 4 Jugadores");
+      }
+      
   }
 
   MYcreateAttr(element, attributes) {
@@ -113,7 +127,7 @@ class Table extends Deck {
     return element;
   }
 
-  remove(id) {
+  removeElementDom(id) {
     let e = document.getElementById(id);
     if (e != null) {
       e.remove();
@@ -122,11 +136,20 @@ class Table extends Deck {
 
   LastPlayerTook() {
     this.players.forEach((player) => {
-      player.lastWhoTook =
-        this.players[this.playerInTurn()].id === player.id ? true : false;
+      player.lastWhoTook = !!this.players[this.playerInTurn()].id
+      // or
+      // Boolean(his.players[this.playerInTurn()].id)
     });
   }
-
+  cardForLastPlayerWhoTook() {
+    for (const player of this.players) {
+      if (player.lastWhoTook) {
+        Array.prototype.push.apply(player.lotOfcard, this.cardsForTable);
+        this.cardsForTable = [];
+        break;
+      }
+    }
+  }
   deleteCard(e) {
     for (let index = 0; index < this.cardsForTable.length; index++) {
       if (this.cardsForTable[index].img === e) {
@@ -139,7 +162,7 @@ class Table extends Deck {
   }
   loopForShowCard(element, div, clickEvent = "") {
     for (const card of element) {
-      let button = this.MYcreateAttr(document.createElement("button"), {
+      const button = this.MYcreateAttr(document.createElement("button"), {
         class: "card",
         id: "card",
         onclick: clickEvent,
@@ -148,7 +171,7 @@ class Table extends Deck {
       });
       div.appendChild(button);
       let cardImg = card instanceof Card ? card.img : card;
-      let img = this.MYcreateAttr(document.createElement("img"), {
+      const img = this.MYcreateAttr(document.createElement("img"), {
         src: cardImg,
         alt: "card",
         class: "img",
@@ -173,8 +196,11 @@ class Table extends Deck {
     this.ShowCards(this.cardsForTable);
     this.handleTurn();
   }
+ 
+  
 
   handleDeckStatus(status) {
+    game.table.removeElementDom("playerText");
     let h2 = this.MYcreateAttr(document.createElement("h2"), {
       id: "dealText",
     });
@@ -187,9 +213,11 @@ class Table extends Deck {
 
     this.dealCardsToPlayers(this.players);
     setTimeout(function () {
-      game.table.remove("combinate_option");
-      game.table.remove("container1");
-      game.table.remove("playerView");
+        
+      game.table.removeElementDom("tableText");
+      game.table.removeElementDom("combinate_option");
+      game.table.removeElementDom("container1");
+      game.table.removeElementDom("playerView");
       game.table.showCardsCombinated();
       game.table.ShowCards(game.table.cardsForTable);
       // this.handleTurn(this.players);
@@ -207,7 +235,7 @@ class Table extends Deck {
       this.players[index].name +
       " Id: " +
       this.players[index].id;
-    this.remove("table");
+    this.removeElementDom("table");
     let out_table = document.getElementById("out_table");
     let div = this.MYcreateAttr(document.createElement("div"), {
       class: "table",
@@ -223,7 +251,7 @@ class Table extends Deck {
   }
 
   handleCards(status) {
-    this.remove("playerText");
+    this.removeElementDom("playerText");
     let h2 = this.MYcreateAttr(document.createElement("h2"), {
       id: "dealText",
     });
@@ -236,7 +264,7 @@ class Table extends Deck {
 
     this.deal(this.players);
     setTimeout(function () {
-      h2.remove();
+      h2.removeElementDom();
       game.table.Display();
     }, 3000);
   }
@@ -250,7 +278,7 @@ class Table extends Deck {
       this.players[index].name +
       " Id: " +
       this.players[index].id;
-    this.remove("table");
+    this.removeElementDom("table");
     let out_table = document.getElementById("out_table");
     let div = this.MYcreateAttr(document.createElement("div"), {
       class: "table",
@@ -324,7 +352,7 @@ class Table extends Deck {
 
     let table = document.querySelector(".table");
     let div, h2;
-    this.remove("playerView");
+    this.removeElementDom("playerView");
 
     if (element === "player_info") {
       div = this.MYcreateAttr(document.createElement("div"), {
@@ -435,10 +463,10 @@ class Table extends Deck {
   }
 
   removeElements() {
-    this.remove("container1");
-    this.remove("playerText");
-    this.remove("tableText");
-    this.remove("playOptions");
+    this.removeElementDom("container1");
+    this.removeElementDom("playerText");
+    this.removeElementDom("tableText");
+    this.removeElementDom("playOptions");
   }
 
   clickOnCard(e) {
@@ -454,7 +482,7 @@ class Table extends Deck {
         class: "playOptions",
         id: "playOptions",
       });
-      this.remove("playOptions");
+      this.removeElementDom("playOptions");
       this.cardSelected = [];
 
       Object.keys(Selected).forEach((key) => {
@@ -491,9 +519,10 @@ class Table extends Deck {
     for (let index = 0; index < namePlayers.length; index++) {
       this.players.push(new Player(namePlayers[index].value, index));
     }
-    this.remove("participants");
+    this.removeElementDom("participants");
     this.createDeck();
     this.shufflingCards(this.cardsDeck);
+    this.prepereTableCards();
     this.dealCardsToPlayers(this.players);
     this.showCardsCombinated();
     this.ShowCards(this.cardsForTable);
@@ -524,40 +553,46 @@ class Table extends Deck {
 
   showCardsCombinated() {
     // show posible combination in the table
-    this.remove("combinate_option");
+    this.removeElementDom("combinate_option");
 
     let cardCombinate = this.makePosibleCombinations();
     const divBlock = this.MYcreateAttr(document.createElement("div"), {
       class: "combinate_option",
       id: "combinate_option",
     });
-
-    cardCombinate.forEach((element) => {
-      let button = this.MYcreateAttr(document.createElement("button"), {
-        class: "card card_combinate",
-        id: "card",
-        onmouseover: "game.table.showPairCombinated(event);",
-        onclick: "game.table.takeCombination(event);",
-        type: "button",
-        value: element,
-      });
-      button.innerText = element[0];
-      divBlock.appendChild(button);
-    });
+    let handleDisplay = (element) => {
+        const car = this.MYcreateAttr(document.createElement("button"), {
+          class: "card card_combinate",
+          id: "card",
+          onmouseover: "game.table.showPairCombinated(event);",
+          onclick: "game.table.takeCombination(event);",
+          type: "button",
+          value: element,
+        });
+        car.innerText = element[0];
+        divBlock.appendChild(car);
+      
+    }
+    cardCombinate.forEach(handleDisplay);
     let table = document.querySelector(".table");
     table.appendChild(divBlock);
   }
 
   showPairCombinated(e) {
     // show the card that combinate was made
-    this.remove("pairCombinate");
-
+    this.removeElementDom("pairCombinate");
+    // aqui recibo el evento onclick de las cartas combinadas del  cual estraigo los valores y de el 
+    // especificamente los url que es lo que necesito 
+    // esas url son adjuntadas en el metodo ShowCardCombinated
     const element = e.toElement.value.split(",");
     let [, card1, card2] = element;
+
+    //creando un apartado en el DOM para mostra las cartas que se han combinado osea el overMouse
     const div = this.MYcreateAttr(document.createElement("div"), {
       class: "pairCombinate",
       id: "pairCombinate",
     });
+
     let table = document.getElementById("combinate_option");
     const title = this.MYcreateAttr(document.createElement("h2"), {
       class: "titleText",
@@ -566,6 +601,8 @@ class Table extends Deck {
     title.innerText = "Par cobinado";
     div.appendChild(title);
     div.appendChild(document.createElement("br"));
+
+    // aqui llamao el metodo loopForShowCard para desplegarlas basandome en ls url
     let div1 = this.loopForShowCard([card2, card1], div);
     table.appendChild(div1);
   }
@@ -600,9 +637,11 @@ class Table extends Deck {
     /// determinate score of player
     function whoWonPoints(array, players, get) {
       // determonate which player won most picas or most card
+      //let maxGet = Math.max(...mostPicas)
       let maxGet = Math.max(...array),
-        indexOfWinner = array.indexOf(maxGet);
-      if (array.indexOf(maxGet, indexOfWinner + 1) === -1) {
+          winner = mostPicas.filter(e => e === maxGet);
+      if (winner.length === 1) {
+        array.indexOf(maxGet);
         players[indexOfWinner].score += get;
       }
     }
@@ -631,11 +670,12 @@ class Table extends Deck {
       Array.prototype.push.apply(this.cardForShuffle, player.lotOfcard);
       player.lotOfcard = [];
     });
+    
     whoWonPoints(mostCards, this.players, 3);
     // en esta parte deberia ir un *1* ya que el que tenga mayor catidad de picas gana un punto
     // pero le puse 21 para que el juego termine en una sola ronda
     whoWonPoints(mostPicas, this.players, 1);
-
+    
     this.players.forEach((e) => {
       stackScore.push(e.score);
     });
@@ -654,16 +694,18 @@ class Table extends Deck {
       // this function check if all the players do not have cards in their deck
       let countCondition = 0;
       game.table.players.forEach((element) => {
+        // countCondition =  element.cardsPlayer.length === 0 ? countCondition += 1 : ;
         if (element.cardsPlayer.length === 0) {
           countCondition += 1;
         }
       });
-
-      if (game.table.players.length === countCondition) {
-        return true;
-      } else {
-        return false;
-      }
+      
+      return game.table.players.length === countCondition ? true : false;
+    //   if (game.table.players.length === countCondition) {
+    //     return true;
+    //   } else {
+    //     return false;
+    //   }
     };
 
     if (this.cards.length != 0) {
@@ -673,13 +715,7 @@ class Table extends Deck {
     } else {
       if (verifyCardsForDealAgain()) {
         // give the card in the table to lastplayertook
-        for (const player of this.players) {
-          if (player.lastWhoTook) {
-            Array.prototype.push.apply(player.lotOfcard, this.cardsForTable);
-            this.cardsForTable = [];
-            break;
-          }
-        }
+        this.cardForLastPlayerWhoTook()
 
         this.scoring();
         if (this.verifyWinner) {
@@ -691,6 +727,7 @@ class Table extends Deck {
           }
         } else {
           this.shufflingCards(this.cardForShuffle);
+          this.prepereTableCards();
           this.handleDeckStatus("Barajando...");
         }
       }
@@ -706,19 +743,10 @@ class Game {
   }
 
   getParticipants() {
-    let participants = 0;
+    // let participants = 0;
     document
       .getElementById("participants")
-      .addEventListener("submit", function (e) {
-        participants = parseInt(document.getElementById("quantity").value);
-        if (participants > 1 && participants < 5) {
-          document.getElementById("participants").remove();
-          game.initGame(participants);
-        } else {
-          alert("Debe introducir de 2 a 4 Jugadores");
-        }
-        e.preventDefault();
-      });
+      .addEventListener("submit", this.table.handleParticipantSubmit);
   }
 }
 var game = new Game();
