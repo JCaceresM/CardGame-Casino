@@ -64,7 +64,7 @@ class Deck {
      * shuffling cards
      * this function is used to deal the cards after each game
      */
-    while (true) {
+    while (cards.length) {
       if (!cards.length) {
         break;
       }
@@ -72,10 +72,16 @@ class Deck {
       this.cards.push(cards[this.random]);
       cards.splice(this.random, 1);
     }
-
+    
+  }
+  prepareTableCards(){ 
+    /**
+     * For add cards to the table
+     */
     for (let index = 0; index < 4; index++) {
       this.cardsForTable.push(this.cards.pop());
     }
+    
   }
 
   dealCardsToPlayers(players) {
@@ -494,6 +500,7 @@ class Table extends Deck {
     this.remove("participants");
     this.createDeck();
     this.shufflingCards(this.cardsDeck);
+    this.prepareTableCards();
     this.dealCardsToPlayers(this.players);
     this.showCardsCombinated();
     this.ShowCards(this.cardsForTable);
@@ -691,6 +698,7 @@ class Table extends Deck {
           }
         } else {
           this.shufflingCards(this.cardForShuffle);
+          this.prepareTableCards();
           this.handleDeckStatus("Barajando...");
         }
       }
