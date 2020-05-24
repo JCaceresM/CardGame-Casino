@@ -73,9 +73,11 @@ class Deck {
       cards.splice(this.random, 1);
     }
     
-    
   }
-   prepereTableCards () {
+  prepareTableCards(){ 
+    /**
+     * For add cards to the table
+     */
     for (let index = 0; index < 4; index++) {
       this.cardsForTable.push(this.cards.pop());
     }
@@ -125,7 +127,7 @@ class Table extends Deck {
     return element;
   }
 
-  removeElementDom(id) {
+  removeSpecificItemById(id) {
     let e = document.getElementById(id);
     if (e != null) {
       e.remove();
@@ -198,7 +200,7 @@ class Table extends Deck {
   
 
   handleDeckStatus(status) {
-    game.table.removeElementDom("playerText");
+    game.table.removeSpecificItemById("playerText");
     let h2 = this.MYcreateAttr(document.createElement("h2"), {
       id: "dealText",
     });
@@ -212,10 +214,10 @@ class Table extends Deck {
     this.dealCardsToPlayers(this.players);
     setTimeout(function () {
         
-      game.table.removeElementDom("tableText");
-      game.table.removeElementDom("combinate_option");
-      game.table.removeElementDom("container1");
-      game.table.removeElementDom("playerView");
+      game.table.removeSpecificItemById("tableText");
+      game.table.removeSpecificItemById("combinate_option");
+      game.table.removeSpecificItemById("container1");
+      game.table.removeSpecificItemById("playerView");
       game.table.showCardsCombinated();
       game.table.ShowCards(game.table.cardsForTable);
       // this.handleTurn(this.players);
@@ -240,7 +242,7 @@ class Table extends Deck {
     this.players[index].name +
     " Id: " +
     this.players[index].id;
-    this.removeElementDom("table");
+    this.removeSpecificItemById("table");
     let out_table = document.getElementById("out_table");
     let div = this.MYcreateAttr(document.createElement("div"), {
       class: "table",
@@ -264,7 +266,7 @@ class Table extends Deck {
   //     this.players[index].name +
   //     " Id: " +
   //     this.players[index].id;
-  //   this.removeElementDom("table");
+  //   this.removeSpecificItemById("table");
   //   let out_table = document.getElementById("out_table");
   //   let div = this.MYcreateAttr(document.createElement("div"), {
   //     class: "table",
@@ -280,7 +282,7 @@ class Table extends Deck {
   // }
   
   handleCards(status) {
-    this.removeElementDom("playerText");
+    this.removeSpecificItemById("playerText");
     let h2 = this.MYcreateAttr(document.createElement("h2"), {
       id: "dealText",
     });
@@ -293,7 +295,7 @@ class Table extends Deck {
 
     this.deal(this.players);
     setTimeout(function () {
-      h2.removeElementDom();
+      h2.removeSpecificItemById();
       game.table.Display();
     }, 3000);
   }
@@ -354,7 +356,7 @@ class Table extends Deck {
 
     let table = document.querySelector(".table");
     let div, h2;
-    this.removeElementDom("playerView");
+    this.removeSpecificItemById("playerView");
 
     if (element === "player_info") {
       div = this.MYcreateAttr(document.createElement("div"), {
@@ -458,10 +460,10 @@ class Table extends Deck {
   }
 
   removeElements() {
-    this.removeElementDom("container1");
-    this.removeElementDom("playerText");
-    this.removeElementDom("tableText");
-    this.removeElementDom("playOptions");
+    this.removeSpecificItemById("container1");
+    this.removeSpecificItemById("playerText");
+    this.removeSpecificItemById("tableText");
+    this.removeSpecificItemById("playOptions");
   }
 
   clickOnCard(e) {
@@ -477,7 +479,7 @@ class Table extends Deck {
         class: "playOptions",
         id: "playOptions",
       });
-      this.removeElementDom("playOptions");
+      this.removeSpecificItemById("playOptions");
       this.cardSelected = [];
 
       Object.keys(Selected).forEach((key) => {
@@ -514,10 +516,10 @@ class Table extends Deck {
     for (let index = 0; index < namePlayers.length; index++) {
       this.players.push(new Player(namePlayers[index].value, index));
     }
-    this.removeElementDom("participants");
+    this.removeSpecificItemById("participants");
     this.createDeck();
     this.shufflingCards(this.cardsDeck);
-    this.prepereTableCards();
+    this.prepareTableCards();
     this.dealCardsToPlayers(this.players);
     this.showCardsCombinated();
     this.ShowCards(this.cardsForTable);
@@ -548,7 +550,7 @@ class Table extends Deck {
 
   showCardsCombinated() {
     // show posible combination in the table
-    this.removeElementDom("combinate_option");
+    this.removeSpecificItemById("combinate_option");
 
     let cardCombinate = this.makePosibleCombinations();
     const divBlock = this.MYcreateAttr(document.createElement("div"), {
@@ -575,7 +577,7 @@ class Table extends Deck {
 
   showPairCombinated(e) {
     // show the card that combinate was made
-    this.removeElementDom("pairCombinate");
+    this.removeSpecificItemById("pairCombinate");
     // aqui recibo el evento onclick de las cartas combinadas del  cual estraigo los valores y de el 
     // especificamente los url que es lo que necesito 
     // esas url son adjuntadas en el metodo ShowCardCombinated
@@ -708,7 +710,7 @@ class Table extends Deck {
            this.checkWhoWon();
         } else {
           this.shufflingCards(this.cardForShuffle);
-          this.prepereTableCards();
+          this.prepareTableCards();
           this.handleDeckStatus("Barajando...");
         }
       }
