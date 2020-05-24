@@ -65,19 +65,15 @@ class Deck {
      * this function is used to deal the cards after each game
      */
     while (cards.length) {
-      // if () {
-      //   break;
-      // }
+     
       this.random = Math.floor(Math.random() * cards.length);
       this.cards.push(cards[this.random]);
       cards.splice(this.random, 1);
     }
     
+    
   }
-  prepareTableCards(){ 
-    /**
-     * For add cards to the table
-     */
+   prepereTableCards () {
     for (let index = 0; index < 4; index++) {
       this.cardsForTable.push(this.cards.pop());
     }
@@ -127,7 +123,7 @@ class Table extends Deck {
     return element;
   }
 
-  removeSpecificItemById(id) {
+  removeElementDom(id) {
     let e = document.getElementById(id);
     if (e != null) {
       e.remove();
@@ -137,8 +133,7 @@ class Table extends Deck {
   LastPlayerTook() {
     this.players.forEach((player) => {
       player.lastWhoTook = !!this.players[this.playerInTurn()].id
-      // or
-      // Boolean(his.players[this.playerInTurn()].id)
+   
     });
   }
   cardForLastPlayerWhoTook() {
@@ -200,7 +195,7 @@ class Table extends Deck {
   
 
   handleDeckStatus(status) {
-    game.table.removeSpecificItemById("playerText");
+    game.table.removeElementDom("playerText");
     let h2 = this.MYcreateAttr(document.createElement("h2"), {
       id: "dealText",
     });
@@ -214,10 +209,10 @@ class Table extends Deck {
     this.dealCardsToPlayers(this.players);
     setTimeout(function () {
         
-      game.table.removeSpecificItemById("tableText");
-      game.table.removeSpecificItemById("combinate_option");
-      game.table.removeSpecificItemById("container1");
-      game.table.removeSpecificItemById("playerView");
+      game.table.removeElementDom("tableText");
+      game.table.removeElementDom("combinate_option");
+      game.table.removeElementDom("container1");
+      game.table.removeElementDom("playerView");
       game.table.showCardsCombinated();
       game.table.ShowCards(game.table.cardsForTable);
       // this.handleTurn(this.players);
@@ -242,7 +237,7 @@ class Table extends Deck {
     this.players[index].name +
     " Id: " +
     this.players[index].id;
-    this.removeSpecificItemById("table");
+    this.removeElementDom("table");
     let out_table = document.getElementById("out_table");
     let div = this.MYcreateAttr(document.createElement("div"), {
       class: "table",
@@ -256,33 +251,10 @@ class Table extends Deck {
     div.appendChild(img);
     out_table.appendChild(div);
   }
-  // handleWinner() {
-  //   let h2 = this.MYcreateAttr(document.createElement("div"), {
-  //     class: "winnerText",
-  //     id: "winnerText",
-  //   });
-  //   h2.innerText =
-  //     "El ganador es:" +
-  //     this.players[index].name +
-  //     " Id: " +
-  //     this.players[index].id;
-  //   this.removeSpecificItemById("table");
-  //   let out_table = document.getElementById("out_table");
-  //   let div = this.MYcreateAttr(document.createElement("div"), {
-  //     class: "table",
-  //   });
-  //   const img = this.MYcreateAttr(document.createElement("img"), {
-  //     src: "./image/winner.jpg",
-  //     alt: "card",
-  //     class: "imgWinner",
-  //   });
-  //   out_table.appendChild(h2);
-  //   div.appendChild(img);
-  //   out_table.appendChild(div);
-  // }
+ 
   
   handleCards(status) {
-    this.removeSpecificItemById("playerText");
+    this.removeElementDom("playerText");
     let h2 = this.MYcreateAttr(document.createElement("h2"), {
       id: "dealText",
     });
@@ -295,7 +267,7 @@ class Table extends Deck {
 
     this.deal(this.players);
     setTimeout(function () {
-      h2.removeSpecificItemById();
+      h2.removeElementDom();
       game.table.Display();
     }, 3000);
   }
@@ -318,8 +290,7 @@ class Table extends Deck {
       });
 
       table.insertBefore(newElement, null);
-      // if (index === participants - 1) {
-        // }
+ 
       }
       let btn = document.createElement("button");
       btn.innerText = "Play";
@@ -356,7 +327,7 @@ class Table extends Deck {
 
     let table = document.querySelector(".table");
     let div, h2;
-    this.removeSpecificItemById("playerView");
+    this.removeElementDom("playerView");
 
     if (element === "player_info") {
       div = this.MYcreateAttr(document.createElement("div"), {
@@ -460,10 +431,10 @@ class Table extends Deck {
   }
 
   removeElements() {
-    this.removeSpecificItemById("container1");
-    this.removeSpecificItemById("playerText");
-    this.removeSpecificItemById("tableText");
-    this.removeSpecificItemById("playOptions");
+    this.removeElementDom("container1");
+    this.removeElementDom("playerText");
+    this.removeElementDom("tableText");
+    this.removeElementDom("playOptions");
   }
 
   clickOnCard(e) {
@@ -479,7 +450,7 @@ class Table extends Deck {
         class: "playOptions",
         id: "playOptions",
       });
-      this.removeSpecificItemById("playOptions");
+      this.removeElementDom("playOptions");
       this.cardSelected = [];
 
       Object.keys(Selected).forEach((key) => {
@@ -516,10 +487,10 @@ class Table extends Deck {
     for (let index = 0; index < namePlayers.length; index++) {
       this.players.push(new Player(namePlayers[index].value, index));
     }
-    this.removeSpecificItemById("participants");
+    this.removeElementDom("participants");
     this.createDeck();
     this.shufflingCards(this.cardsDeck);
-    this.prepareTableCards();
+    this.prepereTableCards();
     this.dealCardsToPlayers(this.players);
     this.showCardsCombinated();
     this.ShowCards(this.cardsForTable);
@@ -550,7 +521,7 @@ class Table extends Deck {
 
   showCardsCombinated() {
     // show posible combination in the table
-    this.removeSpecificItemById("combinate_option");
+    this.removeElementDom("combinate_option");
 
     let cardCombinate = this.makePosibleCombinations();
     const divBlock = this.MYcreateAttr(document.createElement("div"), {
@@ -577,7 +548,7 @@ class Table extends Deck {
 
   showPairCombinated(e) {
     // show the card that combinate was made
-    this.removeSpecificItemById("pairCombinate");
+    this.removeElementDom("pairCombinate");
     // aqui recibo el evento onclick de las cartas combinadas del  cual estraigo los valores y de el 
     // especificamente los url que es lo que necesito 
     // esas url son adjuntadas en el metodo ShowCardCombinated
@@ -633,31 +604,31 @@ class Table extends Deck {
         players[indexOfWinner].score += get;
       }
     }
-
+    
     let mostPicas = [],
-      mostCards = [],
-      stackScore = [];
-    this.players.forEach((player) => {
-      var picas = 0;
-      mostCards.push(player.lotOfcard.length);
-      player.lotOfcard.forEach((element) => {
-        if (element.value === 1) {
-          player.score += 1;
-        }
-        if (element.value === 2 && element.type === "picas") {
-          player.score += 1;
-        }
-        if (element.value === 10 && element.type === "diamond") {
-          player.score += 2;
-        }
-        if (element.type === "picas") {
-          picas += 1;
-        }
-      });
-      mostPicas.push(picas);
-      Array.prototype.push.apply(this.cardForShuffle, player.lotOfcard);
-      player.lotOfcard = [];
-    });
+        mostCards = [],
+        stackScore = [];
+      for (const player of this.players) {
+        var picas = 0;
+        mostCards.push(player.lotOfcard.length);
+        player.lotOfcard.forEach((element) => {
+          if (element.value === 1) {
+            player.score += 1;
+          }
+          if (element.value === 2 && element.type === "picas") {
+            player.score += 1;
+          }
+          if (element.value === 10 && element.type === "diamond") {
+            player.score += 2;
+          }
+          if (element.type === "picas") {
+            picas += 1;
+          }
+        });
+        mostPicas.push(picas);
+        Array.prototype.push.apply(this.cardForShuffle, player.lotOfcard);
+        player.lotOfcard = [];
+    }
     
     whoWonPoints(mostCards, this.players, 3);
     // en esta parte deberia ir un *1* ya que el que tenga mayor catidad de picas gana un punto
@@ -681,22 +652,16 @@ class Table extends Deck {
     let verifyCardsForDealAgain = function () {
       // this function check if all the players do not have cards in their deck
       let countCondition = 0;
-      game.table.players.forEach((element) => {
-        // countCondition =  element.cardsPlayer.length === 0 ? countCondition += 1 : ;
-        if (element.cardsPlayer.length === 0) {
+      game.table.players.forEach((player) => {
+        if (player.cardsPlayer.length === 0) {
           countCondition += 1;
         }
       });
-      
       return game.table.players.length === countCondition ? true : false;
-    //   if (game.table.players.length === countCondition) {
-    //     return true;
-    //   } else {
-    //     return false;
-    //   }
+
     };
 
-    if (this.cards.length != 0) {
+    if (this.cards.length) {
       if (verifyCardsForDealAgain()) {
         this.handleDeckStatus("Repartiendo...");
       }
@@ -710,7 +675,7 @@ class Table extends Deck {
            this.checkWhoWon();
         } else {
           this.shufflingCards(this.cardForShuffle);
-          this.prepareTableCards();
+          this.prepereTableCards();
           this.handleDeckStatus("Barajando...");
         }
       }
