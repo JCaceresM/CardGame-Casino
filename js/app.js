@@ -101,9 +101,7 @@ class Table extends Deck {
   playerInTurn() {
     let count = 0;
     this.players.forEach((player) => {
-      if (player.turn) {
-        count += 1;
-      }
+      if (player.turn) count += 1;
     });
     return count - 1;
   }
@@ -338,20 +336,17 @@ class Table extends Deck {
   }
   //look others card with the same value of combinated card in the table when the player take a combination.
   lookOthersCard(value) {
-    for (let ind = 0; ind < this.cardsForTable.length; ind++) {
-      if (value === this.cardsForTable[ind].value) {
-        // console.log(playerInTurn.cardsPlayer[index].value , this.cardsForTable[ind].value);
-        this.players[this.playerInTurn()].lotOfcard.push(
-          this.cardsForTable[ind]
-        );
+    this.cardsForTable.map((card,ind) => {
+      if (value === card.value) {
+        this.players[this.playerInTurn()].lotOfcard.push( this.cardsForTable[ind]);
         this.cardsForTable.splice(ind, 1);
       }
-    }
+    });
   }
 
   ShowCards(playerObject, element = "table") {
     // deploy card to the players and the table
-    console.log(element);
+    // console.log(element);
     let playerCards =
       playerObject instanceof Player ? playerObject.cardsPlayer : playerObject;
     let clickEvent =
@@ -393,21 +388,14 @@ class Table extends Deck {
   }
 
   handleTurn() {
-    // this method change de turn for each player
-    for (let index = 0; index < this.players.length; index++) {
-      if (this.players[index].turn === false) {
-        this.players[index].turn = true;
-        this.ShowCards(this.players[index], "player_info");
-        break;
-      } else {
-        if (index === this.players.length - 1) {
-          for (let index = 0; index < this.players.length; index++) {
-            this.players[index].turn = false;
-          }
-          this.handleTurn();
-          break;
-        }
-      }
+      
+    const index = this.players.findIndex(player => !player.turn);
+    if (index != -1) {
+      this.players[index].turn = true;
+      this.ShowCards(this.players[index], "player_info");
+    }else{
+      this.players.map(player => player.turn = false);
+      this.handleTurn();
     }
   }
 
@@ -617,26 +605,17 @@ class Table extends Deck {
   takeCombination(e) {
     // take the card combinated and the card that has the same value in the table
     let playerInTurn = this.players[this.playerInTurn()],
-      cardsCombinated = e.toElement.value.split(",");
-    let [value] = cardsCombinated;
-    for (const card of playerInTurn.cardsPlayer) {
-      if (card.value === parseInt(value)) {
-        this.lookOthersCard(card.value);
-        this.handleCombinationProcess(playerInTurn, cardsCombinated, card);
-        break;
-      } else {
-        let index = playerInTurn.cardsPlayer.findIndex(
-          (e) => e.value === card.value && e.type === card.type
-        );
-        if (card.value === 1 && parseInt(value) === 14) {
-          this.lookOthersCard(card.value);
-          this.handleCombinationProcess(playerInTurn, cardsCombinated, card);
-        }
-        if (index === playerInTurn.cardsPlayer.length - 1) {
-          alert("No tienes cartas para tomar esta combinación");
-        }
-      }
+    cardsCombinated = e.toElement.value.split(",");
+    const [value] = cardsCombinated;
+    const index = playerInTurn.cardsPlayer.findIndex(card => card.value === parseInt(value) || card.value === 1 && parseInt(value) === 14 );
+    // console.log(index)
+    if (index != -1) {
+      this.lookOthersCard(playerInTurn.cardsPlayer[index].value);
+      this.handleCombinationProcess(playerInTurn, cardsCombinated, playerInTurn.cardsPlayer[index]);
+    } else {
+      alert("No tienes cartas para tomar esta combinación");
     }
+    
     this.dealAgain();
   }
 
