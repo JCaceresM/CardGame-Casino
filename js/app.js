@@ -1,851 +1,617 @@
-/************************** CLASSES ***********************/
-class Card {
-    constructor(value, type, color) {
-        this.value = value;
-        this.type = type;
-        this.color = color;
-        this.img = ("./image/" + this.value + this.color + this.type + ".PNG");
-        // console.log(this.img)
-    }
-
+/************************** constructor ***********************/
+function Card(value, type, color) {
+  this.value = value;
+  this.type = type;
+  this.color = color;
+  this.img = "./image/" + this.value + this.color + this.type + ".PNG";
 }
 
-class Player {
-    constructor(name, id) {
-        this.name = name;
-        this.id = id;
-        this.cardsPlayer = [];
-        this.lotOfcard = [];
-        this.score = 0;
-        this.turn = false;
-        this.took = false;
-    }
+function Player(name, id) {
+  this.name = name;
+  this.id = id;
+  this.cardsPlayer = [];
+  this.lotOfcard = [];
+  this.score = 0;
+  this.turn = false;
+  this.lastWhoTook = false;
 }
 
-class Deck extends Card {
-    constructor() {
-        super();
-        this.cardsDeck = [];
+/************************** clases ***********************/
+
+class Deck {
+  constructor() {
+    // super();
+    this.cardsDeck = [];
+  }
+
+  cardsValue = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+  cards = [];
+  cardForShuffle = [];
+  cardsForTable = [];
+  cardsProps = {
+    picas: {
+      type: "picas",
+      color: "black",
+    },
+    trevol: {
+      type: "trebol",
+      color: "black",
+    },
+    diamond: {
+      type: "diamond",
+      color: "red",
+    },
+    heart: {
+      type: "heart",
+      color: "red",
+    },
+  };
+
+  createDeck() {
+    for (const prop in this.cardsProps) {
+      for (const Value of this.cardsValue) {
+        const { type, color } = this.cardsProps[prop];
+        this.cardsDeck.push(new Card(Value, type, color));
+      }
     }
+  }
 
-    cardsValue = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
-    cardsProperity = [];
-    shuffledCards = [];
-    cardForShuffle = []
-    cardsForTable = [];
-    random = 0;
-    picas = {
-        type: "picas",
-        color: "black"
-    };
-    trevol = {
-        type: "trebol",
-        color: "black"
-    };
-    diamond = {
-        type: "diamond",
-        color: "red"
-    };
-    heart = {
-        type: "heart",
-        color: "red"
-    };
-    union() {
-        this.cardsProperity.push(this.picas);
-        this.cardsProperity.push(this.trevol);
-        this.cardsProperity.push(this.diamond);
-        this.cardsProperity.push(this.heart);
+  shufflingCards(cards) {
+    /*
+     * shuffling cards
+     * this function is used to deal the cards after each game
+     */
+    while (cards.length) {
+      this.random = Math.floor(Math.random() * cards.length);
+      this.cards.push(cards[this.random]);
+      cards.splice(this.random, 1);
     }
-
-    createDeck() {
-        this.union();
-        //  console.log(this.cardsProperity)
-        // console.log(this.cardsValue)
-        // console.log(this.cardsProperity)
-        this.cardsProperity.forEach(key => {
-            for (let index = 0; index < this.cardsValue.length; index++) {
-                this.cardsDeck.push(new Card(this.cardsValue[index], key.type, key.color));
-            }
-        });
-        // this.cardsDeck.forEach(key => {console.log(key)})
-        return this.cardsDeck;
+  }
+   prepereTableCards () {
+    for (let index = 0; index < 4; index++) {
+      this.cardsForTable.push(this.cards.pop());
     }
-
-
-    shufflingCards(cards) { // shuffling cards
-        // console.log(cards)
-        if (cards.length === 0) {
-            while (true) {
-                if (this.shuffledCards.length === 0) {
-                    break;
-                };
-                this.random = Math.floor(Math.random() * this.shuffledCards.length);
-                cards.push(shuffledCards[random]);
-                this.shuffledCards.splice(this.random, 1);
-
-            }
-        }
-
-        while (true) {
-            if (cards.length === 0) {
-                break;
-            }
-            this.random = Math.floor(Math.random() * cards.length);
-            this.shuffledCards.push(cards[this.random]);
-            cards.splice(this.random, 1);
-
-        }
-        for (let index = 0; index < 4; index++) {
-            this.cardsForTable.push(this.shuffledCards.pop());
-
-        }
-        //console.log(shuffledCards)
-
+   }
+  dealCardsToPlayers(players) {
+    for (const player of players) {
+      for (let index = 0; index < 4; index++) {
+        player.cardsPlayer.push(this.cards.pop());
+      }
     }
-
-    deal(numOfPlayer) {  //dealing cards
-        for (let ind = 0; ind < numOfPlayer.length; ind++) {
-            for (let index = 0; index < 4; index++) {
-                numOfPlayer[ind].cardsPlayer.push(this.shuffledCards.pop());
-
-            }
-        }
-    }
-
+  }
 }
 
 class Table extends Deck {
-    constructor() {
-        super();
+  constructor() {
+    super();
+  }
+  players = [];
+  cardSelected = [];
+  verifyWinner = false;
+
+  playerInTurn() {
+    let count = 0;
+    this.players.forEach((player) => {
+      if (player.turn) count += 1;
+    });
+    return count - 1;
+  }
+  handleParticipantSubmit = (e) => {
+    e.preventDefault();
+    const  participants = parseInt(document.getElementById("quantity").value);
+      if (participants > 1 && participants < 5) {
+        document.getElementById("participants").remove();
+        game.initGame(participants);
+      } else {
+        alert("Debe introducir de 2 a 4 Jugadores");
+      }
+  }
+  MYcreateAttr(element, attributes) {
+    return Object.keys(attributes).reduce((addedAttr,key) => {
+        addedAttr.setAttribute(key, attributes[key])
+        return addedAttr
+    },element)
+  }
+  evaluateWhoWonTheSpecialPoints(array, players, get) {
+    // determonate which player won most picas or most card
+    const  winner = array.filter(e => e === Math.max(...array));
+    if (winner.length === 1) {
+       players[array.indexOf(Math.max(...array))].score += get;
     }
-    ObjectOfPlayes = [];
-    cardSelected = [];
-    verifyWinner = false;
+  }
+  updateTableData(){
+    this.removeElements();
+    this.showCardsCombinated();
+    this.showTableCards(this.cardsForTable);
+    this.handleTurn();
+  }
+  verifyCardsForDealAgain = function () {
+    // this function check if all the players do not have cards in their deck
+    let countCondition = 0;
+    game.table.players.forEach((player) => {
+      if (player.cardsPlayer.length === 0) {
+        countCondition += 1;
+      }
+    });
+    return game.table.players.length === countCondition ? true : false;
 
-
-    MYcreateAttr(element, attributes) {
-
-        Object.keys(attributes).forEach(key => {
-            // console.log(key);
-            element.setAttribute(key, attributes[key]);
-            // console.log(key)
-        });
-        return element;
+  };
+  removeElementDom(id) {
+    const e = document.getElementById(id);
+    e && e.remove();
+  }
+  LastPlayerTook() {
+    this.players.forEach((player) => {
+      player.lastWhoTook = !!this.players[this.playerInTurn()].id
+    });
+  }
+  cardForLastPlayerWhoTook() {
+    for (const player of this.players) {
+      if (player.lastWhoTook) {
+        Array.prototype.push.apply(player.lotOfcard, this.cardsForTable);
+        this.cardsForTable = [];
+        break;
+      }
     }
+  }
+  deleteCard(e) {
+    for (let index = 0; index < this.cardsForTable.length; index++) {
+      if (this.cardsForTable[index].img === e) {
+        this.players[this.playerInTurn()].lotOfcard.push(
+          this.cardsForTable[index]
+        );
+        this.cardsForTable.splice(index, 1);
+      }
+    }
+  }
+  loopForShowCard(element, div, onclick = "") {
+    for (const card of element) {
+      const button = this.MYcreateAttr(document.createElement("button"), {
+        class: "card",
+        id: "card",
+        onclick: onclick,
+        type: "button",
+        value: JSON.stringify(card),
+      });
+      div.appendChild(button);
+      const cardImg = card instanceof Card ? card.img : card;
+      const img = this.MYcreateAttr(document.createElement("img"), {
+        src: cardImg,
+        alt: "card",
+        class: "img",
+      });
+      button.appendChild(img);
+    }
+    return div;
+  }
+  removeElements() {
+    this.removeElementDom("container1");
+    this.removeElementDom("playerText");
+    this.removeElementDom("tableText");
+    this.removeElementDom("playOptions");
+  }
 
-    // statusOfScore() {
-    //     var e = document.getElementById('score');
-    //     if ( e != null) {
-    //          e.remove()
-    //     }
-    //     const table = document.getElementById("out_table");
-    //     const findDiv = document.getElementById("table");
-    //     var div = this.MYcreateAttr(document.createElement("div"),{
-    //         class:"playOptions",
-    //         id: "score"
-    //     });
-    //     var p = this.MYcreateAttr(document.createElement('div'),{});
-    //     this.ObjectOfPlayes.forEach(player =>{
-    //         div.innerText=player.name +' id:'+ player.id;
-            
-    //         var input = this.MYcreateAttr(document.createElement('p'),
-    //         {
-    //             type: "submit",
-    //             disabled: "",
-    //             value: player.score,
-    //             size: "25"
-    //             // placeholder:player.name + player.id
-                
-    //         });
-    
-    //         // console.log(score);
-    //         // p.appendChild(input)
-    //         // p.appendChild(document.createElement('hr'))
-    //         div.appendChild(input);
-            
-    //     });
-    //     // console.log(score);
-    //     table.insertBefore(div,findDiv);
-        
-    // }
+  handleCombinationProcess(playerInTurn, cardsCombinated, card) {
+    const index = playerInTurn.cardsPlayer.findIndex(
+      (element) => element.value === card.value && element.type === card.type
+    );
+    playerInTurn.turn = true;
+    this.LastPlayerTook();
+    playerInTurn.lotOfcard.push(playerInTurn.cardsPlayer[index]);
+    playerInTurn.cardsPlayer.splice(index, 1);
+    this.deleteCard(cardsCombinated[1]);
+    this.deleteCard(cardsCombinated[2]);
+    this.updateTableData();
+  }
+  handleDeckStatus(status) {
+    game.table.removeElementDom("playerText");
+    const h2 = this.MYcreateAttr(document.createElement("h2"), {
+      id: "dealText",
+    });
+    h2.innerText = status;
+    const div = document.getElementById("playerView");
+    div.appendChild(h2);
+    this.players.forEach((player) => {
+      player.turn = false;
+    });
 
-    nplayer(numOfP) {
-        const form = this.MYcreateAttr(document.createElement("form"), { id: "formNamePlayer" });
-        var table = document.querySelector('.table');
-        // var btn = document.getElementById('play');
-        table.appendChild(form);
-        table = document.getElementById("formNamePlayer");
-        for (let index = 0; index < numOfP; index++) {
-            const newElement = this.MYcreateAttr(document.createElement("input"),
-                {
-                    class: "inputs",
-                    name: "playersname",
-                    placeholder: "Player Name",
-                    value: "",
-                    required:''
+    this.dealCardsToPlayers(this.players);
+    setTimeout(function () {
+      game.table.removeElementDom("tableText");
+      game.table.removeElementDom("combinate_option");
+      game.table.removeElementDom("container1");
+      game.table.removeElementDom("playerView");
+      game.table.showCardsCombinated();
+      game.table.showTableCards(game.table.cardsForTable);
+      game.table.handleTurn();
+    }, 3000);
+  }
+  checkWhoWon() {
+    for (const player of this.players) {
+      if (player.score > 20) {
+        this.handleWinner();
+        break;
+      }
+    }
+  }
+  handleWinner() {
+    const h2 = this.MYcreateAttr(document.createElement("div"), {
+      class: "winnerText",
+      id: "winnerText",
+    });
+    h2.innerText =
+    "El ganador es:" +
+    this.players[index].name +
+    " Id: " +
+    this.players[index].id;
+    this.removeElementDom("table");
+    const out_table = document.getElementById("out_table");
+    const div = this.MYcreateAttr(document.createElement("div"), {
+      class: "table",
+    });
+    const img = this.MYcreateAttr(document.createElement("img"), {
+      src: "./image/winner.jpg",
+      alt: "card",
+      class: "imgWinner",
+    });
+    out_table.appendChild(h2);
+    div.appendChild(img);
+    out_table.appendChild(div);
+  }
+  handleCards(status) {
+    this.removeElementDom("playerText");
+    const h2 = this.MYcreateAttr(document.createElement("h2"), {
+      id: "dealText",
+    });
+    h2.innerText = status;
+    const div = document.getElementById("playerView");
+    div.appendChild(h2);
+    this.players.forEach((player) => {
+      player.turn = false;
+    });
 
-                });
-            // console.log(newElement);
-            table.insertBefore(newElement, null);
-            if (index === (numOfP - 1)) {
-                let btn = document.createElement("button");
-                btn.innerText = "Play";
-                table.insertBefore(this.MYcreateAttr(document.createElement("br"), {}), null);
-                table.insertBefore(this.MYcreateAttr(btn, {
-                    class: "btn_S",
-                    name: "Play",
-                    onclick: 'game.table.goPlay();'
-                }), null);
-            }
+    this.deal(this.players);
+    setTimeout(function () {
+      h2.removeElementDom();
+      game.table.Display();
+    }, 3000);
+  }
 
+  getParticipantsName(participants) {
+    const form = this.MYcreateAttr(document.createElement("form"), {
+      id: "participants",
+    });
+    let table = document.querySelector(".table");
+    // console.log(form)
+    table.appendChild(form);
+    table = document.getElementById("participants");
+    for (let index = 0; index < participants; index++) {
+      const newElement = this.MYcreateAttr(document.createElement("input"), {
+        class: "inputs",
+        name: "player",
+        placeholder: "nombre del jugador",
+        value: "",
+        required: "",
+      });
 
+      table.insertBefore(newElement, null);
+      }
+      const btn = document.createElement("button");
+      btn.innerText = "Play";
+      table.insertBefore(
+        this.MYcreateAttr(document.createElement("br"), {}),
+        null
+      );
+      table.insertBefore(
+        this.MYcreateAttr(btn, {
+          class: "inputs",
+          name: "Play",
+          onclick: "game.table.goPlay();",
+        }),
+        null
+      );
+  }
+  //look others card with the same value of combinated card in the table when the player take a combination.
+  searchOthersToMacth(value) {
+    this.cardsForTable.map((card,ind) => {
+      if (value === card.value) {
+        this.players[this.playerInTurn()].lotOfcard.push( this.cardsForTable[ind]);
+        this.cardsForTable.splice(ind, 1);
+      }
+    });
+  }
+  showPlayerCards(player) {
+   const table = document.querySelector(".table");
+   this.removeElementDom("playerView");
+   const div = this.MYcreateAttr(document.createElement("div"), {
+      class: "table",
+      id: "playerView",
+    });
+    const h2 = this.MYcreateAttr(document.createElement("h2"), {
+      class: "titleText",
+      id: "playerText",
+    });
+    h2.innerText =
+    "Player: " + player.name + "  score: " + player.score;
+    div.appendChild(h2);
+    table.appendChild(div);
+    this.loopForShowCard(player.cardsPlayer, div, 'game.table.clickOnCard(event)');
+
+  }
+  showTableCards(cardForTable) {
+      const div = this.MYcreateAttr(document.createElement("div"), {
+        class: "container",
+        id: "container1",
+      });
+      const h2 = this.MYcreateAttr(document.createElement("h2"), {
+        class: "titleText",
+        id: "tableText",
+      });
+
+      h2.innerText = "Table";
+      table.appendChild(h2);
+      table.appendChild(div);
+      this.loopForShowCard(cardForTable, div);
+  }
+
+  handleTurn() {
+    const index = this.players.findIndex(player => !player.turn);
+    if (index != -1) {
+      this.players[index].turn = true;
+      this.showPlayerCards(this.players[index]);
+    }else{
+      this.players.map(player => player.turn = false);
+      this.handleTurn();
+    }
+  }
+
+  leaveCard() {
+    // for leave cards on the table
+    const [value, type, color] = this.cardSelected;
+    const newcardfortable = new Card(value, type, color);
+    this.cardSelected = [];
+    this.cardsForTable.push(newcardfortable);
+
+    const index = this.players[this.playerInTurn()].cardsPlayer.findIndex(
+      (element) =>
+        element.color === newcardfortable.color &&
+        element.value == newcardfortable.value
+    );
+    this.players[this.playerInTurn()].cardsPlayer.splice(index, 1);
+
+    this.updateTableData();
+    this.dealAgain();
+  }
+
+  takeCard() {
+    let take = false
+    const [valueSelected] = this.cardSelected;
+    const indexPlayer = this.players[this.playerInTurn()].cardsPlayer.findIndex(
+      (card) => card.value === valueSelected
+    );
+    const lookingCardToMacth = (card) => {
+      if (card.value === valueSelected) {
+        take = true;
+        const indexTable = this.cardsForTable.findIndex(
+          (card) => card.value === valueSelected
+        );
+        this.players[this.playerInTurn()].lotOfcard.push(card);
+        this.cardsForTable.splice(indexTable, 1);
+      }
+    }
+    this.cardsForTable.forEach(lookingCardToMacth);
+
+    if (take) {
+        this.players[this.playerInTurn()].lotOfcard.push(
+        this.players[this.playerInTurn()].cardsPlayer[indexPlayer]
+        );
+        this.players[this.playerInTurn()].cardsPlayer.splice(indexPlayer, 1);
+        this.updateTableData()
+        take = false;
+        this.LastPlayerTook();
+    } else {
+      alert("Ninguna carta coincide");
+    }
+    this.dealAgain();
+  }
+  clickOnCard(e) {
+    /* menu of options for play
+     * this function is executed when players click on a card
+     */
+    if (e.toElement.parentElement.value === undefined) {//exeption for clicked out of button
+      alert("porfavor haga click ensima de la carta");
+    } else {
+      const Selected = JSON.parse(e.toElement.parentElement.value);
+      const divOptions = this.MYcreateAttr(document.createElement("div"), {
+        class: "playOptions",
+        id: "playOptions",
+      });
+      this.removeElementDom("playOptions");
+      this.cardSelected = [];
+      Object.keys(Selected).forEach((key) => {
+        this.cardSelected.push(Selected[key]);
+      });
+      // menu of options for play
+      const table = document.querySelector(".table");
+      const leave = this.MYcreateAttr(document.createElement("button"), {
+        class: "inputs",
+        id: "leaveBtn",
+        onclick: "game.table.leaveCard()",
+      });
+      const take = this.MYcreateAttr(document.createElement("button"), {
+        class: "inputs",
+        id: "leaveBtn",
+        onclick: "game.table.takeCard()",
+      });
+
+      leave.innerText = "Leave";
+      take.innerText = "Take";
+
+      divOptions.appendChild(leave);
+      divOptions.appendChild(take);
+      table.appendChild(divOptions);
+    }
+  }
+
+  goPlay() {
+    //this method create player
+    const namePlayers = document.getElementsByName("player");
+    for (let index = 0; index < namePlayers.length; index++) {
+      this.players.push(new Player(namePlayers[index].value, index));
+    }
+    this.removeElementDom("participants");
+    this.createDeck();
+    this.shufflingCards(this.cardsDeck);
+    this.prepereTableCards();
+    this.dealCardsToPlayers(this.players);
+    this.updateTableData();
+  }
+
+  makePosibleCombinations() {
+    const combinations = []
+    let  c = 1;
+    const combiningTheCardOnTheTable = (card) => {
+        for (let index = c; index < this.cardsForTable.length; index++) {
+        let cardsComninated = [];
+        if (card.img != this.cardsForTable[index].img) {
+          if (card.value + this.cardsForTable[index].value < 15) {
+            cardsComninated = [
+              card.value + this.cardsForTable[index].value,
+              card.img,
+              this.cardsForTable[index].img,
+            ];
+            combinations.push(cardsComninated);
+          }
         }
-
+      }
+      c++;
     }
+    this.cardsForTable.forEach(combiningTheCardOnTheTable);
+    return combinations;
+  }
 
-    deploy(playerObject, element) { // deploy card to the players and the table
+  showCardsCombinated() {
+    // show posible combination in the table
+    this.removeElementDom("combinate_option");
+    const cardCombinate = this.makePosibleCombinations();
+    const divBlock = this.MYcreateAttr(document.createElement("div"), {
+      class: "combinate_option",
+      id: "combinate_option",
+    });
+    const handleDisplay = (element) => {
+        const car = this.MYcreateAttr(document.createElement("button"), {
+          class: "card card_combinate",
+          id: "card",
+          onmouseover: "game.table.showPairCombinated(event);",
+          onclick: "game.table.takeCombination(event);",
+          type: "button",
+          value: element,
+        });
+        car.innerText = element[0];
+        divBlock.appendChild(car);
+    }
+    cardCombinate.forEach(handleDisplay);
+    const table = document.querySelector(".table");
+    table.appendChild(divBlock);
+  }
 
-        let playerCards;
-        var clickEvent;
+  showPairCombinated(e) {
+    // show the card that combinate was made
+    this.removeElementDom("pairCombinate");
+    const element = e.toElement.value.split(",");
+    const [, card1, card2] = element;
 
-        if (playerObject instanceof Player) {
-            playerCards = playerObject.cardsPlayer;
-            clickEvent = 'game.table.clickOnCard(event);'
+    const div = this.MYcreateAttr(document.createElement("div"), {
+      class: "pairCombinate",
+      id: "pairCombinate",
+    });
+
+    const table = document.getElementById("combinate_option");
+    const title = this.MYcreateAttr(document.createElement("h2"), {
+      class: "titleText",
+      id: "pairCombinate",
+    });
+    title.innerText = "Par cobinado";
+    div.appendChild(title);
+    div.appendChild(document.createElement("br"));
+
+    const div1 = this.loopForShowCard([card2, card1], div);
+    table.appendChild(div1);
+  }
+
+  takeCombination(e) {
+    // take the card combinated and the card that has the same value in the table
+    const playerInTurn = this.players[this.playerInTurn()],
+    cardsCombinated = e.toElement.value.split(",");
+    const [value] = cardsCombinated;
+    const index = playerInTurn.cardsPlayer.findIndex(card => card.value === parseInt(value) || card.value === 1 && parseInt(value) === 14 );
+    if (index != -1) {
+      this.searchOthersToMacth(playerInTurn.cardsPlayer[index].value);
+      this.handleCombinationProcess(playerInTurn, cardsCombinated, playerInTurn.cardsPlayer[index]);
+    } else {
+      alert("No tienes cartas para tomar esta combinación");
+    }
+    this.dealAgain();
+  }
+  scoring() {
+    /// determinate score of player
+    const mostPicas = [],
+          mostCards = [];
+    let  picas = 0;
+    const evaluateScore = (card) => {
+      if (card.value === 1) { player.score += 1;}
+      if (card.value === 2 && card.type === "picas") {player.score += 1;}
+      if (card.value === 10 && card.type === "diamond") {player.score += 2;}
+      if (card.type === "picas") {picas += 1;}
+    }
+    for (const player of this.players) {
+      mostCards.push(player.lotOfcard.length);
+      player.lotOfcard.forEach(evaluateScore);
+      mostPicas.push(picas);
+      Array.prototype.push.apply(this.cardForShuffle, player.lotOfcard);
+      player.lotOfcard = [];
+    }
+    this.evaluateWhoWonTheSpecialPoints(mostCards, this.players, 3);
+    this.evaluateWhoWonTheSpecialPoints(mostPicas, this.players, 1);
+    // this line of code determinate if one player won
+    this.verifyWinner = Math.max(...this.players.map(player => player.score)) > 20 ? true:false;
+  }
+  dealAgain() {
+    /**
+     * this function is to deal
+     * the cards to each player after each card game
+     */
+    if (this.cards.length && this.verifyCardsForDealAgain()) {
+        this.handleDeckStatus("Repartiendo...");
+    } else {
+      if (this.verifyCardsForDealAgain()) {
+        // give the card in the table to lastplayertook
+        this.cardForLastPlayerWhoTook()
+        this.scoring();
+        if (this.verifyWinner) {
+           this.checkWhoWon();
         } else {
-            playerCards = playerObject;
-            clickEvent = ''
-
+          this.shufflingCards(this.cardForShuffle);
+          this.prepereTableCards();
+          this.handleDeckStatus("Barajando...");
         }
-
-        var table = document.querySelector('.table');
-        var div, h2;
-        var e = document.getElementById('playerView');
-        // console.log(e)
-        if (e != null) {
-            e.remove();
-        }
-        if (element === "player1") {
-
-            div = this.MYcreateAttr(document.createElement("div"), { class: "table", id: "playerView" });
-            table.appendChild(div);
-            h2 = this.MYcreateAttr(document.createElement("h2"),
-                {
-                    class: "titleText",
-                    id: "playerText"
-                });
-            //h1 = document.createElement('h1');
-            h2.innerText = 'Player: ' + playerObject.name +  '  score: ' + playerObject.score;
-            div.appendChild(h2);
-            table = document.getElementById('player1');
-
-        } else {
-            div = this.MYcreateAttr(document.createElement("div"),
-                {
-                    class: 'container', id: 'container1'
-                });
-            h2 = this.MYcreateAttr(document.createElement("h2"),
-                {
-                    class: "titleText",
-                    id: "tableText"
-                });
-
-            h2.innerText = "Table";
-            table.appendChild(h2);
-            table.appendChild(div);
-        };
-
-        for (let index = 0; index < playerCards.length; index++) {
-
-            // console.log(ob[index].cardsPlayer[index].img)
-            // const div1 = MYcreateAttr(document.createElement("button"), ["class","id","onclick","type",'value'], ["card", "card", "clickOnCard(event)", "button", playerCards[index]]);
-            const div1 = this.MYcreateAttr(document.createElement("button"), {
-                class: 'card',
-                id: 'card',
-                onclick: clickEvent,
-                type: 'button',
-                value: JSON.stringify(playerCards[index])
-
-            });
-            div.appendChild(div1);
-            const img = this.MYcreateAttr(document.createElement("img"),
-                {
-                    src: playerCards[index].img,
-                    alt: "card",
-                    class: "img"
-
-                });
-            div1.appendChild(img);
-        }
-
+      }
     }
-
-    Display() {
-        //console.log(this.ObjectOfPlayes)
-        for (let index = 0; index < this.ObjectOfPlayes.length; index++) {
-            if (this.ObjectOfPlayes[index].turn === false) {
-                this.ObjectOfPlayes[index].turn = true;
-                this.deploy(this.ObjectOfPlayes[index], "player1");
-                break;
-            } else {
-                if (index === (this.ObjectOfPlayes.length - 1)) {
-                    for (let index = 0; index < this.ObjectOfPlayes.length; index++) {
-                        this.ObjectOfPlayes[index].turn = false;
-                    }
-                    this.Display();
-                    break;
-                }
-            }
-
-        }
-    };
-    emptyCardSelectedArray() { // remove values fron array cardSelected
-        var index = 0;
-        while (index <= this.cardSelected.length) {
-            this.cardSelected.pop();
-            if (this.cardSelected.length == 0) {
-                break;
-            }
-            index++;
-
-        }
-        this.cardSelected.pop();
-        //console.log(cardSelected)
-
-
-    }
-    leaveCard() { // for leave cards on the table
-        let count = 0, index, playerSelected;
-
-        // this.ObjectOfPlayes.forEach(element =>{
-        //     if(element.turn) { count+=1; }
-        // });
-        var newcardfortable = new Card(this.cardSelected[0], this.cardSelected[1], this.cardSelected[2]);
-
-        this.emptyCardSelectedArray();
-
-        //console.log(newcardfortable)
-        this.cardsForTable.push(newcardfortable);
-
-        index = this.ObjectOfPlayes[this.playerInTurn()].cardsPlayer.findIndex(element => element.color === newcardfortable.color && element.value == newcardfortable.value);
-        console.log(index)
-        console.log(this.ObjectOfPlayes);
-        this.ObjectOfPlayes[this.playerInTurn()].cardsPlayer.splice(index, 1);
-
-
-
-        // console.log(this.cardsForTable);
-
-        this.removeElements();
-        this.showCombinated();
-        this.deploy(this.cardsForTable, "container");
-        this.Display();
-        this.dealAgain();
-    }
-
-    takeCard() {
-        let cardForPlayer = [], count = 0, indexTable, indexPlayer, take = false;
-
-        this.cardsForTable.forEach((element) => {
-            if (element.value === this.cardSelected[0]) {
-                console.log(element.value === this.cardSelected[0])
-                take = true;
-                indexTable = this.cardsForTable.findIndex(element => element.value === this.cardSelected[0]);
-                indexPlayer = this.ObjectOfPlayes[this.playerInTurn()].cardsPlayer.findIndex(element => element.value === this.cardSelected[0]);
-                console.log(indexPlayer)
-                console.log(this.ObjectOfPlayes)
-
-                if (indexPlayer != -1) {
-
-                    this.ObjectOfPlayes[this.playerInTurn()].lotOfcard.push(this.ObjectOfPlayes[this.playerInTurn()].cardsPlayer[indexPlayer]);
-                    this.ObjectOfPlayes[this.playerInTurn()].cardsPlayer.splice(indexPlayer, 1);
-                }
-
-                this.ObjectOfPlayes[this.playerInTurn()].lotOfcard.push(element);
-                this.cardsForTable.splice(indexTable, 1);
-
-                //console.log(this.ObjectOfPlayes);
-
-            }
-
-        });
-        if (take) {
-            this.removeElements();
-            this.showCombinated();
-            this.deploy(this.cardsForTable, "container");
-            this.Display();
-            take = false;
-            this.LastPlayerTook();
-        } else {
-            alert('Ninguna carta coincide');
-        }
-        this.dealAgain();
-    }
-
-    removeElements() {
-        // document.getElementById('combinateOption').remove();
-        var exeption1 = document.getElementById('container1'),
-            exeption2 = document.getElementById('playerText'),
-            exeption3 = document.getElementById('tableText'),
-            exeption4 = document.getElementById('playOptions')
-        if (exeption1 != null) {
-            exeption1.remove();
-        }
-        if (exeption2 != null) {
-            exeption2.remove();
-        }
-        if (exeption3 != null) {
-            exeption3.remove();
-        }
-        if (exeption4 != null) {
-            exeption4.remove();
-        }
-    }
-
-
-    clickOnCard(e) { // menu of options for play 
-        // console.log(e)
-        var Selected = JSON.parse(e.toElement.parentElement.value);
-        // console.log(Selected)
-        var divOptions = this.MYcreateAttr(document.createElement("div"), { class: "playOptions", id: "playOptions" });
-
-        if (document.getElementById('playOptions')) { // remuve menu of option when double click on card
-            document.getElementById('playOptions').remove();
-        }
-
-        this.emptyCardSelectedArray();
-
-        Object.keys(Selected).forEach(key => {
-            this.cardSelected.push(Selected[key]);
-        })
-
-        // menu of options for play
-        var table = document.querySelector('.table');
-        //  console.log(table)
-
-        var leave = this.MYcreateAttr(document.createElement('button'),
-            {
-                class: 'inputs',
-                id: 'leaveBtn',
-                onclick: 'game.table.leaveCard()'
-            });
-        /* var combine =  this.MYcreateAttr(document.createElement('button'),
-         {
-             class:'btn_S',
-             id:'combineBtn',
-             onclick:''
-         });*/
-        var take = this.MYcreateAttr(document.createElement('button'),
-            {
-                class: 'inputs',
-                id: 'leaveBtn',
-                onclick: 'game.table.takeCard()'
-            });
-
-        leave.innerText = "Leave";
-        //combine.innerText = "Combine"; // buttons option menu
-        take.innerText = "Take";
-
-        // for play Options
-        divOptions.appendChild(leave);
-        //divOptions.appendChild(combine);
-        divOptions.appendChild(take);
-        table.appendChild(divOptions);
-    }
-
-
-
-    goPlay() {
-        // this.statusOfScore();
-        const namePlayers = document.getElementsByName("playersname");
-        console.log(namePlayers.length)
-        //  console.log(namePlayers);
-        for (let index = 0; index < namePlayers.length; index++) {
-            this.ObjectOfPlayes.push(new Player(namePlayers[index].value, index));
-        }
-        document.getElementById('formNamePlayer').remove();
-        this.shufflingCards(this.createDeck());
-        this.deal(this.ObjectOfPlayes);
-        this.showCombinated();
-        this.deploy(this.cardsForTable, "container");
-        this.Display(this.ObjectOfPlayes);
-
-        //    console.log(this.ObjectOfPlayes)
-        //    console.log(shuffledCards);
-
-
-    }
-
-    combination() {
-        // function onlyNumber(cardInTable){
-        //     var cardCombinable = [];
-        //     cardInTable.forEach(element => {
-        //         var  objecValue  = typeof element.value;
-        //         if(objecValue === 'number'){
-        //             cardCombinable.push(element);
-        //         }
-        //     });
-        //     return cardCombinable;
-        // }
-        // var combinable =onlyNumber(this.cardsForTable);
-        // console.log(combinable)
-
-        var combinated = [], c = 1;
-        this.cardsForTable.forEach(card1 => {
-
-            for (let index = c; index < this.cardsForTable.length; index++) {
-                var cardComninated = [];
-                if (card1.img != this.cardsForTable[index].img) {
-                    if ((card1.value + this.cardsForTable[index].value) < 15) {
-                        cardComninated = [card1.value + this.cardsForTable[index].value, card1.img, this.cardsForTable[index].img]
-                        combinated.push(cardComninated)
-                    }
-
-                }
-
-            }
-            c++;
-
-        });
-        // console.log(combinated)
-        return combinated;
-    }
-
-    showCombinated() {
-        // this.statusOfScore();
-        const exeption = document.getElementById('combinateOption');
-        if (exeption != null) {
-            exeption.remove();
-        }
-        var cardCombinate = this.combination();
-        const combinateOption = this.MYcreateAttr(document.createElement('div'), { class: 'combinateOption', id: 'combinateOption' });
-
-        cardCombinate.forEach(element => {
-            var div = this.MYcreateAttr(document.createElement("button"), {
-                class: 'card_combinate',
-                id: 'card',
-                onmouseover: 'game.table.pairCombinate(event);',
-                onclick: 'game.table.takeCombination(event);',
-                type: 'button',
-                value: element
-
-            });
-            div.innerText = element[0]
-            combinateOption.appendChild(div);
-
-        });
-        var table = document.querySelector(".table");
-        // console.log(table)
-        table.appendChild(combinateOption);
-    }
-
-    pairCombinate(e) {
-        var exeption = document.getElementById('pairCombinate');
-        // console.log(exeption)
-        if (exeption != null) { exeption.remove(); }
-
-        var element = e.toElement.value.split(',');
-        const pairCombinate = this.MYcreateAttr(document.createElement('div'), { class: 'pairCombinate', id: 'pairCombinate' });
-        var table = document.getElementById('combinateOption');
-        const title = this.MYcreateAttr(document.createElement('h2'), { class: 'titleText', id: 'pairCombinate' });
-        title.innerText = 'Par cobinado';
-        pairCombinate.appendChild(title);
-        for (let index = 1; index < element.length; index++) {
-            var div = this.MYcreateAttr(document.createElement("button"), {
-                class: 'card',
-                id: 'card',
-                type: 'button',
-
-
-            });
-            var img = this.MYcreateAttr(document.createElement('img'), {
-                src: element[index],
-                alt: "card",
-                class: "img"
-            });
-            div.appendChild(img);
-            pairCombinate.appendChild(div);
-        }
-        table.appendChild(pairCombinate);
-    }
-
-    playerInTurn() {
-        var count = 0;
-        this.ObjectOfPlayes.forEach(element => {
-            if (element.turn) { count += 1; }
-        });
-        return count - 1;
-    }
-
-    LastPlayerTook() {
-        this.ObjectOfPlayes.forEach(player => {
-            if (this.ObjectOfPlayes[this.playerInTurn()].id === player.id) {
-                player.took = true;
-                // console.log('true')
-            } else {
-                player.took = false;
-                // console.log('false')
-
-            }
-        });
-    }
-
-    deleteCard(e) {
-        for (let index = 0; index < this.cardsForTable.length; index++) {
-            if (this.cardsForTable[index].img === e) {
-                this.ObjectOfPlayes[this.playerInTurn()].lotOfcard.push(this.cardsForTable[index])
-                this.cardsForTable.splice(index, 1);
-            }
-        }
-        //  console.log(this.cardsForTable)
-    }
-
-    takeCombination(e) {
-        var playerInTurn, count = 0;
-        var cardCombinateValue = e.toElement.value.split(',');
-        var alertSuccess = true;
-
-        //  console.log(cardCombinateValue)
-        //  this.ObjectOfPlayes.forEach(element =>{
-        //     if(element.turn) { count+=1; }
-        // });
-        //  console.log(this.ObjectOfPlayes[count-1].cardsPlayer);
-        playerInTurn = this.ObjectOfPlayes[this.playerInTurn()];
-        for (let index = 0; index < playerInTurn.cardsPlayer.length; index++) {
-            
-            if (playerInTurn.cardsPlayer[index].value === parseInt(cardCombinateValue[0])) {
-                for (let ind = 0; ind < this.cardsForTable.length; ind++) {
-                    if (playerInTurn.cardsPlayer[index].value === this.cardsForTable[ind].value) {
-                        console.log(playerInTurn.cardsPlayer[index].value , this.cardsForTable[ind].value);
-                        playerInTurn.lotOfcard.push(this.cardsForTable[ind]);
-                        this.cardsForTable.splice(ind, 1);
-                    }
-                }
-                playerInTurn.turn = true;
-                this.LastPlayerTook();
-                playerInTurn.lotOfcard.push(playerInTurn.cardsPlayer[index]);
-                playerInTurn.cardsPlayer.splice(index, 1);
-                this.deleteCard(cardCombinateValue[1]);
-                this.deleteCard(cardCombinateValue[2]);
-                this.removeElements();
-                this.showCombinated();
-                this.deploy(this.cardsForTable, "container");
-                this.Display();
-            } else {
-
-                if (playerInTurn.cardsPlayer[index].value === 1 && parseInt(cardCombinateValue[0]) === 14) {
-                    playerInTurn.turn = true;
-                    this.LastPlayerTook();
-                    playerInTurn.lotOfcard.push(playerInTurn.cardsPlayer[index]);
-                    playerInTurn.cardsPlayer.splice(index, 1);
-                    this.deleteCard(cardCombinateValue[1]);
-                    this.deleteCard(cardCombinateValue[2]);
-                    this.removeElements();
-                    this.showCombinated();
-                    this.deploy(this.cardsForTable, "container");
-                    this.Display();
-                } else {
-                    if (alertSuccess) {
-                        //console.log(alertSuccess);
-                        alertSuccess = false
-                        // alert('No tienes cartas para tomar esta combinación');
-                    }
-
-                }
-
-
-            }
-
-        }
-        alertSuccess = true;
-        this.dealAgain();
-    }
-
-    scoring() {
-        function verifyWinnerOfPoint(array, ObjectOfPlayes, get) {
-            var maxGet = Math.max(...array),
-                indexOfWinner = array.indexOf(maxGet);
-            if (array.indexOf(maxGet, indexOfWinner + 1) === -1) {
-                ObjectOfPlayes[indexOfWinner].score += get;
-            }
-        }
-
-
-        var mostPicas = [], mostCards = [], stackScore = [];
-        this.ObjectOfPlayes.forEach(player => {
-            var picas = 0;
-            mostCards.push(player.lotOfcard.length);
-            player.lotOfcard.forEach(element => {
-                if (element.value === 1) {
-                    player.score += 1;
-                }
-                if (element.value === 2 && element.type === 'picas') {
-                    player.score += 1;
-                }
-                if (element.value === 10 && element.type === 'diamond') {
-                    player.score += 2;
-                }
-                if (element.type === 'picas') {
-                    picas += 1;
-                }
-
-            });
-            mostPicas.push(picas);
-            Array.prototype.push.apply(this.cardForShuffle, player.lotOfcard);
-            player.lotOfcard = [];
-
-        });
-        // //  console.log(this.ObjectOfPlayes)
-        //  console.log(mostPicas)
-        //  console.log(mostCards)
-        verifyWinnerOfPoint(mostCards, this.ObjectOfPlayes, 3);
-        verifyWinnerOfPoint(mostPicas, this.ObjectOfPlayes, 21);
-
-        this.ObjectOfPlayes.forEach(e => {
-            stackScore.push(e.score);
-        })
-
-        var x = Math.max(...stackScore)
-        if (x > 20) {
-            this.verifyWinner = true;
-            console.log(this.verifyWinner, x);
-        }
-        console.log(this.verifyWinner, x);
-        //  console.log(this.ObjectOfPlayes)
-
-    }
-
-    dealAgain() {
-        console.log(this.shuffledCards.length);
-        var amountOfPlayer = this.ObjectOfPlayes.length;
-        this.ObjectOfPlayes.forEach(element => {
-            console.log(element.cardsPlayer);
-        })
-
-        let verifyCardsForDealAgain = function () {
-            let countCondition = 0;
-            game.table.ObjectOfPlayes.forEach(element => {
-                if (element.cardsPlayer.length === 0) {
-                    countCondition += 1;
-                }
-
-            });
-
-            if (game.table.ObjectOfPlayes.length === countCondition) {
-                return true;
-            } else {
-                return false;
-            }
-
-        }
-
-        if (this.shuffledCards.length != 0) {
-            let h2 = this.MYcreateAttr(document.createElement('h2'), { id: 'dealText' });
-            h2.innerText = 'Repartiendo...';
-
-
-            if (verifyCardsForDealAgain()) {
-                document.getElementById('playerText').remove();
-                let div = document.getElementById('playerView');
-                div.appendChild(h2);
-                for (let index = 0; index < this.ObjectOfPlayes.length; index++) {
-
-                    this.ObjectOfPlayes[index].turn = false;
-
-                }
-                this.deal(this.ObjectOfPlayes);
-                setTimeout(function () {
-                    h2.remove();
-                    game.table.Display();
-                }, 3000);
-
-            }
-        } else {
-            if (verifyCardsForDealAgain()) {
-                for (let index = 0; index < this.ObjectOfPlayes.length; index++) {
-                    if (this.ObjectOfPlayes[index].took) {
-                        Array.prototype.push.apply(this.ObjectOfPlayes[index].lotOfcard, this.cardsForTable);
-                        this.cardsForTable = [];
-                        break;
-                    }
-
-                }
-                this.scoring();
-                if (this.verifyWinner) {
-                    // console.log('El ganador es:')
-                    for (let index = 0; index < this.ObjectOfPlayes.length; index++) {
-                        if (this.ObjectOfPlayes[index].score > 21) {
-                            let h2 = this.MYcreateAttr(document.createElement('div'), { class:'winnerText' ,id: 'winnerText' });
-                            h2.innerText = 'El ganador es:' + this.ObjectOfPlayes[index].name + ' Id: ' + this.ObjectOfPlayes[index].id;
-                            document.getElementById('table').remove();
-                            let div = document.getElementById('out_table');
-                            let elementdiv = this.MYcreateAttr(document.createElement('div'), {
-                                class: "table"
-                            });
-                            const img = this.MYcreateAttr(document.createElement("img"),
-                            {
-                                src: './image/winner.jpg',
-                                alt: "card",
-                                class: 'imgWinner'
-
-                            });
-                            div.appendChild(h2);
-                            elementdiv.appendChild(img);
-                            div.appendChild(elementdiv);
-                            break;
-                        }
-                    }
-                } else {
-                    this.shufflingCards(this.cardForShuffle);
-                    let h2 = this.MYcreateAttr(document.createElement('h2'), { id: 'dealText' });
-                    h2.innerText = 'Barajando.....';
-                    document.getElementById('playerText').remove();
-                    let div = document.getElementById('playerView');
-                    div.appendChild(h2);
-                    this.deal(this.ObjectOfPlayes);
-                    setTimeout(function () {
-                        h2.remove();
-                        game.table.Display();
-
-                    }, 3000);
-
-
-                }
-
-            }
-
-        }
-
-
-    }
-
+  }
 }
 
 class Game {
-    constructor() {
-    }
-    table = new Table();
-    initGame(numOfP) {
-        this.table.nplayer(numOfP);
-    }
+  table = new Table();
+  initGame(participants) {
+    this.table.getParticipantsName(participants);
+  }
 
-
+  getParticipants() {
+    document
+      .getElementById("participants")
+      .addEventListener("submit", this.table.handleParticipantSubmit);
+  }
 }
 
-var game = new Game();
-
-let numOfP = 0;
-document.getElementById("player")
-    .addEventListener('submit', function (e) {
-        numOfP = (parseInt(document.getElementById("numOfP").value));
-
-        if (numOfP > 1 && numOfP < 5) {
-            document.getElementById("player").remove();
-            game.initGame(numOfP);
-
-        }else {
-            alert('Debe introducir de 2 a 4 Jugadores')
-        }
-
-
-        e.preventDefault();
-    })
+const game = new Game();
+game.getParticipants();

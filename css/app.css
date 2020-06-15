@@ -4,22 +4,12 @@ html{
     background-blend-mode: soft-light;
 
 }
-.playOptions{
-    color: #155724;
-    background-color:rgb(156, 196, 214);
-    border-color: #c3e6cb;
-    position: relative;
-    padding: .75rem 1.25rem;
-    margin-bottom: 1rem;
-    border: 1px solid transparent;
-    border-radius: .25rem;
-}
 
 .title {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
     background-color:rgb(156, 196, 214);
     text-align: center;
     text-size-adjust: 10px;
@@ -27,24 +17,14 @@ html{
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     font-size: 2.3em;
     font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;  
-
+    
+  }
+  
+  .inputs {
+    margin: 5px;
+    padding: 5px;
 }
-/* .btn_B{
-    background-color: rgb(75, 139, 83); /* Blue */
-    /* padding: 5px;
-    float: right;
-    margin: inherit;
-} */
-/*
-.btn_S{
-  margin: 5px;
-  padding: 5px;
-} */
 
-.inputs {
-  margin: 5px;
-  padding: 5px;
-}
 .table {
     width: auto;
     height: auto;
@@ -53,12 +33,23 @@ html{
     border: 1px solid blue;
     text-align: center;
   }
+  
+  .playOptions{
+      color: #155724;
+      background-color:rgb(156, 196, 214);
+      border-color: #c3e6cb;
+      position: relative;
+      padding: .75rem 1.25rem;
+      margin-bottom: 1rem;
+      border: 1px solid transparent;
+      border-radius: .25rem;
+  }
+  
   .winnerText {
     text-align: center;
     font-size: x-large;
   }
  
-
 .container {
     display: flex;
     justify-content: center;
@@ -67,20 +58,10 @@ html{
 /*
 * card`s design
 */
-.imgWiner {
-    /* background-color: white; */
-    width: 50%;
-    height: 50%;
-    padding: 1px;
-    margin: 5px;
-    text-align: center;
-    border-radius: 6px 10px 10px 10px;
-    border-style: groove;
-    box-shadow: 1px 0px 4px 2px;
-}
+
 .card{
-    background-color: white;
-    width: 5em;
+  background-color: white;
+  width: 5em;
     height: 6em;
     padding: 1px;
     margin: 5px;
@@ -88,36 +69,22 @@ html{
     border-radius: 6px 10px 10px 10px;
     border-style: groove;
     box-shadow: 1px 0px 4px 2px rgba(0,0,0,1); 
-}
-.card_combinate {
+  }
+  
+  .card_combinate {
     background-color: rgb(143, 188, 143);
-    width: 5em;
-    height: 6em;
-    padding: 1px;
-    margin: 5px;
-    text-align: center;
-    border-radius: 6px 10px 10px 10px;
-    border-style: groove;
-    box-shadow: 1px 0px 4px 2px rgba(0,0,0,1); 
-}
-/**
-*  icon position
-*/
-.img{
-  width: 61px;
-  height: 70px;
+  }
+  
+  .img{
+    width: 61px;
+    height: 70px;
     padding: 0px 0px 0px 0px; 
     margin: 0px;  
-}
-/* .pairCombinate{
-  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
-  color: green;
-  display: block;
-  text-decoration: red;
-  text-decoration-style:solid ;
-  text-decoration-line: underline;
-} */
-
+  }
+  /**
+  *  icon position
+  */
+  
 .titleText{
   font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
   /* color: green; */
@@ -133,3 +100,14 @@ html{
   font-size: 30px;
 }
 
+.imgWiner {
+    /* background-color: white; */
+    width: 50%;
+    height: 50%;
+    padding: 1px;
+    margin: 5px;
+    text-align: center;
+    border-radius: 6px 10px 10px 10px;
+    border-style: groove;
+    box-shadow: 1px 0px 4px 2px;
+  }
