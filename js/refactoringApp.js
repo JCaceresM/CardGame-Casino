@@ -22,15 +22,15 @@ function Card(value, type, color) {
       return addedAttr
     },element)
   }
-  function removeElementDom(id) {
+  function removeDomElement(id) {
     const e = document.getElementById(id);
     e && e.remove();
   }
   function removeElements() {
-    this.removeElementDom("container1");
-    this.removeElementDom("playerText");
-    this.removeElementDom("tableText");
-    this.removeElementDom("playOptions");
+    this.removeDomElement("container1");
+    this.removeDomElement("playerText");
+    this.removeDomElement("tableText");
+    this.removeDomElement("playOptions");
   }
   /************************** clases ***********************/
 
@@ -101,11 +101,11 @@ function Card(value, type, color) {
 
     updateTableData(){
         removeElements();
-        this.showCardsCombinated();
+        this.renderCombinatedCards();
         this.showTableCards(this.deck.cardsForTable);
     }
-    loopForShowCard(element, div, onclick = "") {
-        for (const card of element) {
+    renderCards(cards, div, onclick = "") {
+        for (const card of cards) {
           const button = MYcreateAttr(document.createElement("button"), {
             class: "card",
             id: "card",
@@ -125,17 +125,26 @@ function Card(value, type, color) {
         return div;
     }
     deleteCard(cardToDelete,playerInTurn) {
-        for (let index = 0; index < this.deck.cardsForTable.length; index++) {
-          if (this.deck.cardsForTable[index].img === cardToDelete) {
-                playerInTurn.lotOfcard.push(
-                this.deck.cardsForTable[index]
-            );
-            this.deck.cardsForTable.splice(index, 1);
-          }
+      this.deck.cardsForTable.forEach(card => {
+        const index = this.deck.cardsForTable.findIndex(card => card.img === cardToDelete )
+        if (index != -1) {
+          playerInTurn.lotOfcard.push(
+              this.deck.cardsForTable[index]
+          );
+          this.deck.cardsForTable.splice(index, 1);
         }
+      });
+        // for (let index = 0; index < this.deck.cardsForTable.length; index++) {
+        //   if (this.deck.cardsForTable[index].img === cardToDelete) {
+        //         playerInTurn.lotOfcard.push(
+        //         this.deck.cardsForTable[index]
+        //     );
+        //     this.deck.cardsForTable.splice(index, 1);
+        //   }
+        // }
     }
     handleDeckStatus(status,players) {
-        removeElementDom("playerText");
+        removeDomElement("playerText");
         const h2 = MYcreateAttr(document.createElement("h2"), {
           id: "dealText",
         });
@@ -147,9 +156,9 @@ function Card(value, type, color) {
         });
         this.deck.dealCardsToPlayers(players);
     }
-    showCardsCombinated() {
+    renderCombinatedCards() {
         // show posible combination in the table
-        removeElementDom("combinate_option");
+        removeDomElement("combinate_option");
         const cardCombinate = this.makePosibleCombinations();
         const divBlock = MYcreateAttr(document.createElement("div"), {
           class: "combinate_option",
@@ -176,16 +185,14 @@ function Card(value, type, color) {
         let  c = 1;
         const combiningTheCardOnTheTable = (card) => {
             for (let index = c; index < this.deck.cardsForTable.length; index++) {
-            let cardsComninated = [];
-            if (card.img != this.deck.cardsForTable[index].img) {
-              if (card.value + this.deck.cardsForTable[index].value < 15) {
-                cardsComninated = [
+            let Comninatedcards = [];
+            if (card.img != this.deck.cardsForTable[index].img && card.value + this.deck.cardsForTable[index].value < 15) {
+                Comninatedcards = [
                   card.value + this.deck.cardsForTable[index].value,
                   card.img,
                   this.deck.cardsForTable[index].img,
                 ];
-                combinations.push(cardsComninated);
-              }
+                combinations.push(Comninatedcards);
             }
           }
           c++;
@@ -207,11 +214,11 @@ function Card(value, type, color) {
         h2.innerText = "Table";
         table.appendChild(h2);
         table.appendChild(div);
-        this.loopForShowCard(cardForTable, div);
+        this.renderCards(cardForTable, div);
     }
     showPairCombinated(e) {
-        // show the card that combinate was made
-        removeElementDom("pairCombinate");
+        // Shows the cards/pair of cards that are combined
+        removeDomElement("pairCombinate");
         const element = e.toElement.value.split(",");
         const [, card1, card2] = element;
 
@@ -229,33 +236,9 @@ function Card(value, type, color) {
         div.appendChild(title);
         div.appendChild(document.createElement("br"));
 
-        const div1 = this.loopForShowCard([card2, card1], div);
+        const div1 = this.renderCards([card2, card1], div);
         table.appendChild(div1);
     }
-    handleWinner(players) {
-        const h2 = MYcreateAttr(document.createElement("div"), {
-          class: "winnerText",
-          id: "winnerText",
-        });
-        h2.innerText =
-        "El ganador es:" +
-        players[index].name +
-        " Id: " +
-        players[index].id;
-        removeElementDom("table");
-        const out_table = document.getElementById("out_table");
-        const div = MYcreateAttr(document.createElement("div"), {
-          class: "table",
-        });
-        const img = MYcreateAttr(document.createElement("img"), {
-          src: "./image/winner.jpg",
-          alt: "card",
-          class: "imgWinner",
-        });
-        out_table.appendChild(h2);
-        div.appendChild(img);
-        out_table.appendChild(div);
-      }
   }
 
 class Game {
@@ -266,6 +249,7 @@ class Game {
     players = [];
     cardSelected= [];
     verifyWinner = false;
+    activePlayer = 0;
     handleTurn() {
         const index = this.players.findIndex(player => !player.turn);
         if (index != -1) {
@@ -280,37 +264,39 @@ class Game {
         this.players.forEach((player) => {
           player.lastWhoTook = false;
         });
-        this.players[this.playerInTurn()].lastWhoTook = true;
+        this.players[this.].lastWhoTook = true;
     }
-    playerInTurn() {
+    updatePlayerInTurn() {
         let count = 0;
         this.players.forEach((player) => {
           if (player.turn) count += 1;
         });
-        return count - 1;
+        this.activePlayer = count - 1;
     }
     //look others card with the same value of combinated card in the table when the player take a combination.
     searchOthersToMacth(value) {
-        this.table.deck.cardsForTable.map((card,ind) => {
-            if (value === card.value) {
-                this.players[this.playerInTurn()].lotOfcard.push( this.table.deck.cardsForTable[ind]);
-                this.table.deck.cardsForTable.splice(ind, 1);
-            }
-        });
+      this.updatePlayerInTurn();
+      this.table.deck.cardsForTable.forEach((card,ind) => {
+          if (value === card.value) {
+              this.players[this.activePlayer].lotOfcard.push(card);
+              this.table.deck.cardsForTable.splice(ind, 1);
+          }
+      });
     }
-    handleCombinationProcess(cardsCombinated, card) {
-        const playerInTurn =  this.players[this.playerInTurn()]
-        const index = playerInTurn.cardsPlayer.findIndex(
-          (element) => element.value === card.value && element.type === card.type
-        );
-        playerInTurn.turn = true;
-        this.LastPlayerTook();
-        playerInTurn.lotOfcard.push(playerInTurn.cardsPlayer[index]);
-        playerInTurn.cardsPlayer.splice(index, 1);
-        this.table.deleteCard(cardsCombinated[1], playerInTurn);
-        this.table.deleteCard(cardsCombinated[2], playerInTurn);
-        this.table.updateTableData();
-        this.handleTurn()
+    handleCombinationProcess(comninatedCards, card) {
+      this.updatePlayerInTurn()
+      const playerInTurn =  this.players[this.activePlayer]
+      const index = playerInTurn.cardsPlayer.findIndex(
+        (element) => element.value === card.value && element.type === card.type
+      );
+      playerInTurn.turn = true;
+      this.LastPlayerTook();
+      playerInTurn.lotOfcard.push(playerInTurn.cardsPlayer[index]);
+      playerInTurn.cardsPlayer.splice(index, 1);
+      this.table.deleteCard(comninatedCards[1], playerInTurn);
+      this.table.deleteCard(comninatedCards[2], playerInTurn);
+      this.table.updateTableData();
+      this.handleTurn()
     }
     getParticipants() {
         document
@@ -367,7 +353,7 @@ class Game {
         for (let index = 0; index < namePlayers.length; index++) {
           this.players.push(new Player(namePlayers[index].value, index));
         }
-        removeElementDom("participants");
+        removeDomElement("participants");
         this.table.deck.createDeck();
         this.table.deck.shufflingCards(this.table.deck.newCardDeck);
         this.table.deck.prepereTableCards(this.table.deck.cards);
@@ -377,7 +363,7 @@ class Game {
       }
     showPlayerCards(player) {
         const table = document.querySelector(".table");
-        removeElementDom("playerView");
+        removeDomElement("playerView");
         const div = MYcreateAttr(document.createElement("div"), {
            class: "table",
            id: "playerView",
@@ -390,7 +376,7 @@ class Game {
          "Player: " + player.name + "  score: " + player.score;
          div.appendChild(h2);
          table.appendChild(div);
-         this.table.loopForShowCard(player.cardsPlayer, div, 'game.clickOnCardOption(event)');
+         this.table.renderCards(player.cardsPlayer, div, 'game.clickOnCardOption(event)');
     }
     clickOnCardOption(e) {
         /* menu of options for play
@@ -404,7 +390,7 @@ class Game {
             class: "playOptions",
             id: "playOptions",
           });
-          removeElementDom("playOptions");
+          removeDomElement("playOptions");
           this.cardSelected = [];
           Object.keys(Selected).forEach((key) => {
             this.cardSelected.push(Selected[key]);
@@ -431,68 +417,71 @@ class Game {
         }
     }
     leaveCard() {
+      this.updatePlayerInTurn();
         // for leave cards on the table
         const [value, type, color] = this.cardSelected;
         const newcardfortable = new Card(value, type, color);
         this.cardSelected = [];
         this.table.deck.cardsForTable.push(newcardfortable);
 
-        const index = this.players[this.playerInTurn()].cardsPlayer.findIndex(
+        const index = this.players[this.activePlayer].cardsPlayer.findIndex(
           (card) =>
           card.color === newcardfortable.color &&
           card.value == newcardfortable.value
         );
-        this.players[this.playerInTurn()].cardsPlayer.splice(index, 1);
+        this.players[this.activePlayer].cardsPlayer.splice(index, 1);
 
         this.table.updateTableData();
         this.handleTurn();
         this.dealAgain(this.players);
     }
     takeCard() {
-        let take = false
-        const [valueSelected] = this.cardSelected;
-        const indexPlayer = this.players[this.playerInTurn()].cardsPlayer.findIndex(
-          (card) => card.value === valueSelected
-        );
-        const lookingCardToMacth = (card) => {
-          if (card.value === valueSelected) {
-            take = true;
-            const indexTable = this.table.deck.cardsForTable.findIndex(
-              (cardTable) => cardTable.value === valueSelected
-            );
-            this.players[this.playerInTurn()].lotOfcard.push(card);
-            this.table.deck.cardsForTable.splice(indexTable, 1);
-          }
+      this.updatePlayerInTurn();
+      let take = false
+      const [valueSelected] = this.cardSelected;
+      const indexPlayer = this.players[this.activePlayer].cardsPlayer.findIndex(
+        (card) => card.value === valueSelected
+      );
+      const lookingCardToMacth = (card) => {
+        if (card.value === valueSelected) {
+          take = true;
+          const indexTable = this.table.deck.cardsForTable.findIndex(
+            (cardTable) => cardTable.value === valueSelected
+          );
+          this.players[this.activePlayer].lotOfcard.push(card);
+          this.table.deck.cardsForTable.splice(indexTable, 1);
         }
-        this.table.deck.cardsForTable.forEach(lookingCardToMacth);
+      }
+      this.table.deck.cardsForTable.forEach(lookingCardToMacth);
 
-        if (take) {
-            this.players[this.playerInTurn()].lotOfcard.push(
-            this.players[this.playerInTurn()].cardsPlayer[indexPlayer]
-            );
-            this.players[this.playerInTurn()].cardsPlayer.splice(indexPlayer, 1);
-            this.table.updateTableData()
-            this.handleTurn()
-            take = false;
-            this.LastPlayerTook();
-        } else {
-          alert("Ninguna carta coincide");
-        }
-        this.dealAgain(this.players);
+      if (take) {
+          this.players[this.activePlayer].lotOfcard.push(
+          this.players[this.activePlayer].cardsPlayer[indexPlayer]
+          );
+          this.players[this.activePlayer].cardsPlayer.splice(indexPlayer, 1);
+          this.table.updateTableData()
+          this.handleTurn()
+          take = false;
+          this.LastPlayerTook();
+      } else {
+        alert("Ninguna carta coincide");
+      }
+      this.dealAgain(this.players);
     }
     takeCombination(e) {
-        // take the card combinated and the card that has the same value in the table
-        // const playerInTurn = this.players[this.playerInTurn()],
-        const cardsCombinated = e.toElement.value.split(",");
-        const [value] = cardsCombinated;
-        const index = this.players[this.playerInTurn()].cardsPlayer.findIndex(card => card.value === parseInt(value) || card.value === 1 && parseInt(value) === 14 );
-        if (index != -1) {
-          this.searchOthersToMacth(this.players[this.playerInTurn()].cardsPlayer[index].value);
-          this.handleCombinationProcess(cardsCombinated, this.players[this.playerInTurn()].cardsPlayer[index]);
-        } else {
-          alert("No tienes cartas para tomar esta combinación");
-        }
-        this.dealAgain(this.players);
+      this.updatePlayerInTurn();
+      // take the card combinated and the card that has the same value in the table
+      // const playerInTurn = this.players[this.activePlayer],
+      const comninatedCards = e.toElement.value.split(",");
+      const [value] = comninatedCards;
+      const index = this.players[this.activePlayer].cardsPlayer.findIndex(card => card.value === parseInt(value) || card.value === 1 && parseInt(value) === 14 );
+      if (index != -1) {
+        this.searchOthersToMacth(this.players[this.activePlayer].cardsPlayer[index].value);
+        this.handleCombinationProcess(comninatedCards, this.players[this.activePlayer].cardsPlayer[index]);
+      } else {
+        alert("No tienes cartas para tomar esta combinación");
+      }
+      this.dealAgain(this.players);
     }
     scoring() {
         /// determinate score of player
@@ -544,21 +533,45 @@ class Game {
           }
         }
     }
+    showWinnerMessage(players) {
+      const h2 = MYcreateAttr(document.createElement("div"), {
+        class: "winnerText",
+        id: "winnerText",
+      });
+      h2.innerText =
+      "El ganador es:" +
+      players[index].name +
+      " Id: " +
+      players[index].id;
+      removeDomElement("table");
+      const out_table = document.getElementById("out_table");
+      const div = MYcreateAttr(document.createElement("div"), {
+        class: "table",
+      });
+      const img = MYcreateAttr(document.createElement("img"), {
+        src: "./image/winner.jpg",
+        alt: "card",
+        class: "imgWinner",
+      });
+      out_table.appendChild(h2);
+      div.appendChild(img);
+      out_table.appendChild(div);
+    }
     checkWhoWon(players) {
         for (const player of players) {
           if (player.score > 20) {
-            this.handleWinner(players);
+            this.showWinnerMessage(players);
             break;
           }
         }
     }
     roudFinished(){
       setTimeout(() => {
-        removeElementDom("tableText");
-        removeElementDom("combinate_option");
-        removeElementDom("container1");
-        removeElementDom("playerView");
-        this.table.showCardsCombinated();
+        removeDomElement("tableText");
+        removeDomElement("combinate_option");
+        removeDomElement("container1");
+        removeDomElement("playerView");
+        this.table.renderCombinatedCards();
         this.table.showTableCards(this.table.deck.cardsForTable);
         this.handleTurn();
       }, 3000);
