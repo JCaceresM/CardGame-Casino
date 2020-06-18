@@ -198,7 +198,7 @@ class Table {
     this.players.forEach((player) => {
       player.turn = false;
     });
-    console.log(status,'ukgh')
+    
     setTimeout(() => {
       this.deck.dealCardsToPlayers(this.players);
       this.helpers.removeElementDom("tableText");
