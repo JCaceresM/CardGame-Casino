@@ -134,14 +134,7 @@ function Card(value, type, color) {
           this.deck.cardsForTable.splice(index, 1);
         }
       });
-        // for (let index = 0; index < this.deck.cardsForTable.length; index++) {
-        //   if (this.deck.cardsForTable[index].img === cardToDelete) {
-        //         playerInTurn.lotOfcard.push(
-        //         this.deck.cardsForTable[index]
-        //     );
-        //     this.deck.cardsForTable.splice(index, 1);
-        //   }
-        // }
+
     }
     handleDeckStatus(status,players) {
         removeDomElement("playerText");
@@ -185,14 +178,14 @@ function Card(value, type, color) {
         let  c = 1;
         const combiningTheCardOnTheTable = (card) => {
             for (let index = c; index < this.deck.cardsForTable.length; index++) {
-            let Comninatedcards = [];
+            let combinatedCards = [];
             if (card.img != this.deck.cardsForTable[index].img && card.value + this.deck.cardsForTable[index].value < 15) {
-                Comninatedcards = [
+                combinatedCards = [
                   card.value + this.deck.cardsForTable[index].value,
                   card.img,
                   this.deck.cardsForTable[index].img,
                 ];
-                combinations.push(Comninatedcards);
+                combinations.push(combinatedCards);
             }
           }
           c++;
@@ -283,7 +276,7 @@ class Game {
           }
       });
     }
-    handleCombinationProcess(comninatedCards, card) {
+    handleCombinationProcess(combinatedCards, card) {
       this.updatePlayerInTurn()
       const playerInTurn =  this.players[this.activePlayer]
       const index = playerInTurn.cardsPlayer.findIndex(
@@ -293,8 +286,8 @@ class Game {
       this.LastPlayerTook();
       playerInTurn.lotOfcard.push(playerInTurn.cardsPlayer[index]);
       playerInTurn.cardsPlayer.splice(index, 1);
-      this.table.deleteCard(comninatedCards[1], playerInTurn);
-      this.table.deleteCard(comninatedCards[2], playerInTurn);
+      this.table.deleteCard(combinatedCards[1], playerInTurn);
+      this.table.deleteCard(combinatedCards4[2], playerInTurn);
       this.table.updateTableData();
       this.handleTurn()
     }
@@ -472,12 +465,12 @@ class Game {
       this.updatePlayerInTurn();
       // take the card combinated and the card that has the same value in the table
       // const playerInTurn = this.players[this.activePlayer],
-      const comninatedCards = e.toElement.value.split(",");
-      const [value] = comninatedCards;
+      const combinatedCards4 = e.toElement.value.split(",");
+      const [value] = combinatedCards4;
       const index = this.players[this.activePlayer].cardsPlayer.findIndex(card => card.value === parseInt(value) || card.value === 1 && parseInt(value) === 14 );
       if (index != -1) {
         this.searchOthersToMacth(this.players[this.activePlayer].cardsPlayer[index].value);
-        this.handleCombinationProcess(comninatedCards, this.players[this.activePlayer].cardsPlayer[index]);
+        this.handleCombinationProcess(combinatedCards4, this.players[this.activePlayer].cardsPlayer[index]);
       } else {
         alert("No tienes cartas para tomar esta combinación");
       }
