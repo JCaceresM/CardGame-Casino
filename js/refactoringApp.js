@@ -264,7 +264,7 @@ class Game {
         this.players.forEach((player) => {
           player.lastWhoTook = false;
         });
-        this.players[this.].lastWhoTook = true;
+        this.players[this.activePlayer].lastWhoTook = true;
     }
     updatePlayerInTurn() {
         let count = 0;
